@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데이트 코스 플래너 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%); /* 60% 메인 컬러 */
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6c7b8a; /* 30% 보조 컬러 */
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            border: 1px solid #e8ecf4; /* 30% 보조 컬러 */
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #34495e; /* 30% 보조 컬러 */
+            font-size: 0.95rem;
+        }
+
+        input, select, textarea {
+            padding: 12px 16px;
+            border: 2px solid #e8ecf4;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .generate-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2); /* 10% 포인트 컬러 */
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            margin: 30px 0;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e8ecf4;
+            margin-top: 30px;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .result-summary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .summary-item {
+            display: inline-block;
+            margin: 0 15px;
+            font-weight: 600;
+        }
+
+        .course-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .course-item {
+            background: #f8f9ff; /* 메인 컬러 변형 */
+            border: 2px solid #e8ecf4;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .course-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .course-time {
+            background: #667eea; /* 10% 포인트 컬러 */
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .course-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .course-location {
+            color: #6c7b8a; /* 30% 보조 컬러 */
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .course-description {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .course-cost {
+            background: #e8f5e8;
+            color: #27ae60;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .error {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #e53e3e;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .summary-item {
+                display: block;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">💕 데이트 코스 플래너</h1>
+            <p class="subtitle">AI가 추천하는 완벽한 데이트 코스를 만들어보세요!</p>
+        </header>
+
+        <div class="form-container">
+            <form id="dateForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="currentLocation">거주 지역</label>
+                        <input type="text" id="currentLocation" placeholder="예: 서울 강남구" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dateLocation">데이트 희망 지역</label>
+                        <input type="text" id="dateLocation" placeholder="예: 홍대, 강남, 명동" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hasCar">자차 유무</label>
+                        <select id="hasCar" required>
+                            <option value="">선택하세요</option>
+                            <option value="yes">있음</option>
+                            <option value="no">없음</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="preferredFood">선호 음식</label>
+                        <input type="text" id="preferredFood" placeholder="예: 한식, 이탈리안, 일식 (선택사항)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activities">선호 액티비티</label>
+                        <textarea id="activities" rows="3" placeholder="예: 영화감상, 쇼핑, 카페, 놀이공원, 박물관 등 (선택사항)"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="budget">예산 범위 (선택사항)</label>
+                        <select id="budget">
+                            <option value="">제한 없음</option>
+                            <option value="low">5만원 이하</option>
+                            <option value="medium">5-10만원</option>
+                            <option value="high">10만원 이상</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="generate-btn">
+                    ✨ 데이트 코스 생성하기
+                </button>
+            </form>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>완벽한 데이트 코스를 준비하고 있어요... 잠시만 기다려주세요! 💕</p>
+        </div>
+
+        <div id="result" class="result-container" style="display: none;">
+            <!-- 결과가 여기에 표시됩니다 -->
+        </div>
+    </div>
+
+    <script>
+        // Gemini API 설정 (실제 사용시에는 환경변수나 서버에서 관리해야 합니다)
+        const API_KEY = 'AIzaSyC7kzh-bgdWG8KJEYfP4JbAXR7L2YpicPs'; // 실제 API 키로 교체하세요
+        const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+
+        document.getElementById('dateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // 폼 데이터 수집
+            const formData = {
+                currentLocation: document.getElementById('currentLocation').value,
+                dateLocation: document.getElementById('dateLocation').value,
+                hasCar: document.getElementById('hasCar').value,
+                preferredFood: document.getElementById('preferredFood').value,
+                activities: document.getElementById('activities').value,
+                budget: document.getElementById('budget').value
+            };
+
+            // 로딩 표시
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+
+            try {
+                const datesCourse = await generateDateCourse(formData);
+                displayResult(datesCourse);
+            } catch (error) {
+                console.error('Error:', error);
+                displayError('데이트 코스 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+
+        async function generateDateCourse(formData) {
+            // 프롬프트 생성
+            const prompt = `
+            다음 조건을 바탕으로 하루 데이트 코스를 상세히 추천해주세요:
+
+            **조건:**
+            - 거주지역: ${formData.currentLocation}
+            - 데이트지역: ${formData.dateLocation}
+            - 자차유무: ${formData.hasCar === 'yes' ? '있음' : '없음'}
+            - 선호음식: ${formData.preferredFood || '제한없음'}
+            - 선호활동: ${formData.activities || '제한없음'}
+            - 예산: ${getBudgetText(formData.budget)}
+
+            **요구사항:**
+            1. 시간순으로 4-6개의 코스 추천 (오전~저녁)
+            2. 각 코스별로 예상 소요시간, 예상비용 포함
+            3. 실제 존재하는 장소명 또는 지역명 사용
+            4. 총 예상 비용과 소요시간 계산
+            5. JSON 형식으로 응답
+
+            다음 JSON 형식으로 답변해주세요:
+            {
+                "totalCost": "총 예상비용 (예: 80,000원)",
+                "totalTime": "총 소요시간 (예: 8시간)",
+                "courses": [
+                    {
+                        "time": "시간 (예: 10:00-12:00)",
+                        "title": "코스 제목",
+                        "location": "구체적인 장소명",
+                        "description": "코스 설명 (2-3줄)",
+                        "cost": "예상비용 (예: 15,000원)"
+                    }
+                ]
+            }
+            `;
+
+            // API 호출
+            const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: prompt
+                        }]
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('API 호출 실패');
+            }
+
+            const data = await response.json();
+            const responseText = data.candidates[0].content.parts[0].text;
+            
+            // JSON 파싱
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                return JSON.parse(jsonMatch[0]);
+            } else {
+                throw new Error('응답 파싱 실패');
+            }
+        }
+
+        function getBudgetText(budget) {
+            switch(budget) {
+                case 'low': return '5만원 이하';
+                case 'medium': return '5-10만원';
+                case 'high': return '10만원 이상';
+                default: return '제한없음';
+            }
+        }
+
+        function displayResult(datesCourse) {
+            const resultDiv = document.getElementById('result');
+            
+            const html = `
+                <div class="result-header">
+                    <h2 class="result-title">🎯 맞춤 데이트 코스</h2>
+                </div>
+                
+                <div class="result-summary">
+                    <div class="summary-item">💰 총 예상비용: ${datesCourse.totalCost}</div>
+                    <div class="summary-item">⏰ 총 소요시간: ${datesCourse.totalTime}</div>
+                </div>
+                
+                <div class="course-list">
+                    ${datesCourse.courses.map(course => `
+                        <div class="course-item">
+                            <div class="course-time">${course.time}</div>
+                            <div class="course-title">${course.title}</div>
+                            <div class="course-location">📍 ${course.location}</div>
+                            <div class="course-description">${course.description}</div>
+                            <div class="course-cost">${course.cost}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            resultDiv.innerHTML = html;
+            resultDiv.style.display = 'block';
+            
+            // 결과로 스크롤
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayError(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<div class="error">${message}</div>`;
+            resultDiv.style.display = 'block';
+        }
+
+        // 데모 데이터 (API 키가 없을 경우)
+        function getDemoData() {
+            return {
+                totalCost: "75,000원",
+                totalTime: "8시간",
+                courses: [
+                    {
+                        time: "10:00-12:00",
+                        title: "브런치 카페",
+                        location: "홍대 앤트러사이트",
+                        description: "분위기 좋은 카페에서 여유로운 브런치를 즐기며 데이트 시작. 인스타그램 감성 가득한 공간에서 대화 나누기",
+                        cost: "25,000원"
+                    },
+                    {
+                        time: "12:30-15:00",
+                        title: "홍대 거리 산책",
+                        location: "홍대 걷고싶은거리",
+                        description: "홍대의 독특한 거리 문화를 체험하고 다양한 소품샵 구경하기. 거리 공연도 감상할 수 있어요",
+                        cost: "10,000원"
+                    },
+                    {
+                        time: "15:00-17:00",
+                        title: "영화 관람",
+                        location: "CGV 홍대",
+                        description: "최신 영화를 함께 관람하며 특별한 시간 보내기. 영화 후 감상 나누기",
+                        cost: "20,000원"
+                    },
+                    {
+                        time: "18:00-20:00",
+                        title: "맛집 디너",
+                        location: "홍대 파스타 맛집",
+                        description: "로맨틱한 분위기의 이탈리안 레스토랑에서 특별한 저녁 식사. 와인과 함께 즐기는 코스 요리",
+                        cost: "50,000원"
+                    }
+                ]
+            };
+        }
+
+        // API 키가 설정되지 않았을 경우 데모 실행
+        if (API_KEY === 'YOUR_GEMINI_API_KEY') {
+            console.log('데모 모드로 실행됩니다. 실제 사용을 위해서는 Gemini API 키가 필요합니다.');
+            
+            // 데모 버튼 이벤트 오버라이드
+            document.getElementById('dateForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('result').style.display = 'none';
+                
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    displayResult(getDemoData());
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
