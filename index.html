@@ -695,12 +695,13 @@
             resultDiv.style.display = 'block';
             
             // 지도에 데이트 코스 표시
-            // 지도에 데이트 코스 표시
-            setTimeout(async () => {
-                if (typeof kakao !== 'undefined' && dateCourseMap) {
-                    await displayDateCourseOnMap(datesCourse.courses);
-                }
-            }, 500);
+            if (!isLocalHost) {
+                setTimeout(async () => {
+                    if (typeof kakao !== 'undefined' && dateCourseMap) {
+                        await displayDateCourseOnMap(datesCourse.courses);
+                    }
+                }, 500);
+            }
             
             // 결과로 스크롤
             resultDiv.scrollIntoView({ behavior: 'smooth' });
@@ -744,10 +745,22 @@
                     return;
                 }
                 
+                if (isLocalHost) {
+                    // 로컬 환경에서는 스크립트 로드 없이 resolve
+                    debugLog('로컬 환경 - 카카오맵 스킵');
+                    resolve();
+                    return;
+                }
+                
                 fetch('/api/get-kakao-key')
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`API 응답 오류: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
-                        if (!data.key) {
+                        if (!data.success || !data.key) {
                             throw new Error('카카오 API 키를 가져올 수 없습니다.');
                         }
                         
@@ -755,6 +768,7 @@
                         script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${data.key}&libraries=services&autoload=false`;
                         script.onload = () => {
                             kakao.maps.load(() => {
+                                debugLog('카카오맵 스크립트 로드 완료');
                                 resolve();
                             });
                         };
@@ -772,8 +786,14 @@
 
         // 지도 초기화
         window.addEventListener('load', async function() {
-            await loadKakaoMapScript();
-            await initializeDateMap();
+            try {
+                await loadKakaoMapScript();
+                if (!isLocalHost) {
+                    await initializeDateMap();
+                }
+            } catch (error) {
+                console.error('❌ 카카오맵 초기화 실패:', error);
+            }
         });
     </script>
     <script src="js/map.js"></script>
