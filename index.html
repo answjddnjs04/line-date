@@ -233,5 +233,19 @@
             </div>
         </div>
     </div>
+    <script type="module">
+        import './js/supabase.js';
+        
+        // 페이지 로드시 로그인 상태 확인
+        window.addEventListener('load', async () => {
+            // Supabase 초기화 대기
+            setTimeout(async () => {
+                if (window.supabaseClient?.isAuthenticated()) {
+                    // 이미 로그인된 상태면 플래너로 리다이렉트
+                    window.location.href = 'planner.html';
+                }
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
