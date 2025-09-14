@@ -67,26 +67,34 @@ class SupabaseClient {
     }
 
     async signUp(email, password, userData = {}) {
-        if (!this.supabase) throw new Error('Supabase가 초기화되지 않았습니다');
+    if (!this.supabase) throw new Error('Supabase가 초기화되지 않았습니다');
+    
+    try {
+        const { data, error } = await this.supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: userData,
+                emailRedirectTo: undefined // 이메일 인증 링크 비활성화
+            }
+        });
         
-        try {
-            const { data, error } = await this.supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: userData
-                }
-            });
-            
-            if (error) throw error;
-            
-            console.log('✅ 회원가입 성공:', data.user?.email);
-            return { success: true, user: data.user };
-        } catch (error) {
-            console.error('회원가입 실패:', error);
-            return { success: false, error: error.message };
+        if (error) throw error;
+        
+        console.log('✅ 회원가입 성공:', data.user?.email);
+        
+        // 이메일 인증이 비활성화되어 있다면 사용자가 바로 인증됨
+        if (data.user && !data.user.email_confirmed_at) {
+            console.log('📧 이메일 인증 대기 중...');
         }
+        
+        this.currentUser = data.user;
+        return { success: true, user: data.user, needsConfirmation: !data.session };
+    } catch (error) {
+        console.error('회원가입 실패:', error);
+        return { success: false, error: error.message };
     }
+}
 
     async signIn(email, password) {
         if (!this.supabase) throw new Error('Supabase가 초기화되지 않았습니다');
