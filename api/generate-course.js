@@ -69,52 +69,19 @@ if (!API_KEY || !KAKAO_API_KEY) {
       return 'FD6'; // 기본값: 음식점
     }
     
-    async function searchRealPlaces(location, keyword, category = 'FD6', targetCoords = null) {
+    async function searchRealPlaces(location, keyword, category = 'FD6', targetCoords = null, isFirstPlace = false) {
   // 키워드를 단순화
   const simpleKeyword = simplifyKeyword(keyword);
-  const searchQuery = `${location} ${simpleKeyword}`;  // "강남 브런치"
+  const searchQuery = `${location} ${simpleKeyword}`;
   
-  console.log(`🔍 검색 중: "${searchQuery}" (원본: "${keyword}")`);
+  console.log(`🔍 검색 중: "${searchQuery}" (원본: "${keyword}") - ${isFirstPlace ? '첫 번째 장소' : '후속 장소'}`);
       const searchUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(searchQuery)}&category_group_code=${category}&size=15&sort=accuracy`;
-      
-      console.log(`🔍 검색 중: "${searchQuery}" (카테고리: ${category})`);
-      console.log(`📍 API URL: ${searchUrl}`);
       
       const response = await fetch(searchUrl, {
   headers: {
     'Authorization': `KakaoAK ${KAKAO_API_KEY}`
   }
 });
-
-  // 검색 키워드 단순화 함수 (searchRealPlaces 함수 위에 추가)
-function simplifyKeyword(keyword) {
-  const keywordMap = {
-    '고급 브런치 카페': '브런치',
-    '브런치 카페': '브런치',
-    '미슐랭 레스토랑': '레스토랑',
-    '고급 이탈리안 레스토랑': '이탈리안',
-    '분위기 좋은 카페': '카페',
-    '명품거리 쇼핑': '쇼핑',
-    '야경 명소': '야경',
-    '미술관 전시': '미술관'
-  };
-  
-  // 매핑된 단순 키워드가 있으면 사용, 없으면 첫 번째 단어만 사용
-  return keywordMap[keyword] || keyword.split(' ')[0];
-}
-
-// 거리 계산 함수 추가
-function calculateDistance(lat1, lng1, lat2, lng2) {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLng/2) * Math.sin(dLng/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
-}
 
 console.log(`🌐 카카오 API 응답 상태:`, response.status);
 
@@ -142,7 +109,10 @@ console.log(`📊 검색 결과:`, {
       
       // 거리 기반 필터링 적용
       let filteredPlaces = data.documents;
-      if (targetCoords) {
+      
+      // 첫 번째 장소는 사용자 입력 위치만 고려, 이후는 이전 장소 기준으로 필터링
+      if (!isFirstPlace && targetCoords) {
+        const originalLength = filteredPlaces.length;
         filteredPlaces = filteredPlaces.filter(place => {
           if (!place.x || !place.y) return true;
           
@@ -152,7 +122,9 @@ console.log(`📊 검색 결과:`, {
           return distance <= 30; // 30km 이내
         });
         
-        console.log(`🎯 거리 필터링 후: ${filteredPlaces.length}개 장소`);
+        console.log(`🎯 거리 필터링: ${originalLength} -> ${filteredPlaces.length}개 장소 (기준: ${targetCoords.lat}, ${targetCoords.lng})`);
+      } else {
+        console.log(`📍 첫 번째 장소 - 거리 필터링 생략`);
       }
       
       const places = filteredPlaces.slice(0, 3).map(place => ({
@@ -272,13 +244,14 @@ console.log(`📊 검색 결과:`, {
       const course = courseStructure.courses[i];
       const categoryCode = getCategoryCode(course.category);
       
-      // 첫 번째 장소는 데이트 지역 기준으로만, 이후는 첫 번째 장소 기준으로 필터링
-      const filterCoords = i === 0 ? targetCoords : (firstPlaceCoords || targetCoords);
+      // 첫 번째 장소는 거리 필터링 없이, 이후는 이전 장소 기준으로 필터링
+      const filterCoords = i === 0 ? null : (firstPlaceCoords || targetCoords);
       const realPlaces = await searchRealPlaces(
         formData.dateLocation, 
         course.searchKeyword, 
         categoryCode,
-        filterCoords
+        filterCoords,
+        i === 0 // 첫 번째 장소인지 여부
       );
       
       let selectedPlace;
