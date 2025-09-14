@@ -264,6 +264,9 @@ console.log(`📊 검색 결과:`, {
       console.warn('기준 좌표 추출 실패:', error);
     }
     
+    // 중복 처리를 위한 변수
+    const usedPlaceNames = [];
+    
     for (const course of courseStructure.courses) {
       const categoryCode = getCategoryCode(course.category);
       const realPlaces = await searchRealPlaces(
@@ -277,17 +280,35 @@ console.log(`📊 검색 결과:`, {
       let selectionReason = '';
       
       if (realPlaces.length > 0) {
-        // 첫 번째 장소 선택 (정확도 순으로 정렬됨)
-        selectedPlace = realPlaces[0];
+        // 중복 처리 로직 적용
+        const isNoDuplicate = ['음식점', '카페', '레스토랑', '식당', '브런치', '디저트'].some(type => 
+          course.searchKeyword.toLowerCase().includes(type) || 
+          course.category.toLowerCase().includes(type)
+        );
         
-        // 선정 이유 생성
-        const reasons = [];
-        if (selectedPlace.category.includes('맛집')) reasons.push('평점이 높은 인기 맛집');
-        if (selectedPlace.address.includes('역')) reasons.push('접근성이 좋은 위치');
-        if (course.category === '카페') reasons.push('분위기 좋은 카페');
-        if (course.category === '문화시설') reasons.push('데이트 분위기에 적합');
+        if (isNoDuplicate) {
+          // 중복 금지 - 사용되지 않은 장소 찾기
+          selectedPlace = realPlaces.find(place => !usedPlaceNames.includes(place.name));
+          if (!selectedPlace && realPlaces.length > 0) {
+            selectedPlace = realPlaces[0]; // 어쩔 수 없으면 첫 번째
+          }
+        } else {
+          // 중복 허용 (관광지, 공원 등)
+          selectedPlace = realPlaces[0];
+        }
         
-        selectionReason = reasons.length > 0 ? reasons[0] : '해당 지역의 대표적인 장소';
+        if (selectedPlace) {
+          usedPlaceNames.push(selectedPlace.name);
+          
+          // 선정 이유 생성
+          const reasons = [];
+          if (selectedPlace.category.includes('맛집')) reasons.push('평점이 높은 인기 맛집');
+          if (selectedPlace.address.includes('역')) reasons.push('접근성이 좋은 위치');
+          if (course.category === '카페') reasons.push('분위기 좋은 카페');
+          if (course.category === '문화시설') reasons.push('데이트 분위기에 적합');
+          
+          selectionReason = reasons.length > 0 ? reasons[0] : '해당 지역의 대표적인 장소';
+        }
       }
       
       finalCourses.push({
@@ -300,7 +321,9 @@ console.log(`📊 검색 결과:`, {
         description: course.description,
         selectionReason: selectionReason,
         cost: course.cost,
-        realPlace: !!selectedPlace
+        realPlace: !!selectedPlace,
+        coordinates: selectedPlace ? selectedPlace.coordinates : null,
+        isDuplicate: selectedPlace && usedPlaceNames.filter(name => name === selectedPlace.name).length > 1
       });
     }
 
