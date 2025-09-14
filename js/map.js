@@ -137,47 +137,65 @@ class DateCourseMap {
     }
 
     // 지도에 데이트 코스 표시
-    async displayCourses(courses) {
-        this.clearMap();
+async displayCourses(courses) {
+    console.log('📍 displayCourses 호출됨, 코스 수:', courses.length);
+    this.clearMap();
+    
+    const validCourses = [];
+    
+    // 좌표 변환 - API에서 받은 coordinates 우선 사용
+    for (let i = 0; i < courses.length; i++) {
+        const course = courses[i];
+        let coords = null;
         
-        const validCourses = [];
+        // API에서 받은 coordinates가 있으면 사용
+        if (course.coordinates && course.coordinates.lat && course.coordinates.lng) {
+            coords = course.coordinates;
+            console.log(`✅ API 좌표 사용: ${course.title}`, coords);
+        } else {
+            // 주소로 좌표 변환
+            coords = await this.getCoordinates(course.address);
+            console.log(`🔍 주소 변환: ${course.title}`, coords);
+        }
         
-        // 좌표 변환
-        for (let i = 0; i < courses.length; i++) {
-            const course = courses[i];
-            const coords = await this.getCoordinates(course.address);
-            
-            if (coords) {
-                validCourses.push({
-                    ...course,
-                    position: new kakao.maps.LatLng(coords.lat, coords.lng),
-                    number: i + 1
-                });
-            }
+        if (coords) {
+            validCourses.push({
+                ...course,
+                position: new kakao.maps.LatLng(coords.lat, coords.lng),
+                number: i + 1
+            });
+        } else {
+            console.warn(`⚠️ 좌표 없음: ${course.title}`);
         }
-
-        if (validCourses.length === 0) {
-            console.warn('표시할 수 있는 유효한 좌표가 없습니다.');
-            return;
-        }
-
-        // 마커 생성
-        validCourses.forEach(course => {
-            this.createMarker(course.position, course.number, course.title);
-        });
-
-        // 경로 라인 생성
-        for (let i = 0; i < validCourses.length - 1; i++) {
-            this.createPolyline(
-                validCourses[i].position,
-                validCourses[i + 1].position,
-                i
-            );
-        }
-
-        // 지도 범위 조정
-        this.fitMapBounds(validCourses);
     }
+
+    console.log(`📊 유효한 코스: ${validCourses.length}개`);
+
+    if (validCourses.length === 0) {
+        console.warn('표시할 수 있는 유효한 좌표가 없습니다.');
+        return;
+    }
+
+    // 마커 생성
+    validCourses.forEach((course, index) => {
+        console.log(`🎯 마커 생성: ${course.number}. ${course.title}`);
+        this.createMarker(course.position, course.number, course.title);
+    });
+
+    // 경로 라인 생성
+    for (let i = 0; i < validCourses.length - 1; i++) {
+        console.log(`📏 라인 생성: ${i + 1} → ${i + 2}`);
+        this.createPolyline(
+            validCourses[i].position,
+            validCourses[i + 1].position,
+            i
+        );
+    }
+
+    // 지도 범위 조정
+    this.fitMapBounds(validCourses);
+    console.log('✅ 지도 표시 완료');
+}
 
     // 지도 범위 자동 조정
     fitMapBounds(courses) {
