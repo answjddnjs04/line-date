@@ -69,15 +69,13 @@ if (!API_KEY || !KAKAO_API_KEY) {
       return 'FD6'; // 기본값: 음식점
     }
     
-    // 실제 장소 검색 함수 (디버그 버전)
-    // 개선된 - 단순한 검색어 생성
-async function searchRealPlaces(location, keyword, category = 'FD6') {
+    async function searchRealPlaces(location, keyword, category = 'FD6', targetCoords = null) {
   // 키워드를 단순화
   const simpleKeyword = simplifyKeyword(keyword);
   const searchQuery = `${location} ${simpleKeyword}`;  // "강남 브런치"
   
   console.log(`🔍 검색 중: "${searchQuery}" (원본: "${keyword}")`);
-      const searchUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(searchQuery)}&category_group_code=${category}&size=3&sort=accuracy`;
+      const searchUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(searchQuery)}&category_group_code=${category}&size=15&sort=accuracy`;
       
       console.log(`🔍 검색 중: "${searchQuery}" (카테고리: ${category})`);
       console.log(`📍 API URL: ${searchUrl}`);
@@ -105,6 +103,19 @@ function simplifyKeyword(keyword) {
   return keywordMap[keyword] || keyword.split(' ')[0];
 }
 
+// 거리 계산 함수 추가
+function calculateDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
 console.log(`🌐 카카오 API 응답 상태:`, response.status);
 
 if (!response.ok) {
@@ -129,12 +140,31 @@ console.log(`📊 검색 결과:`, {
         return [];
       }
       
-      const places = data.documents.map(place => ({
+      // 거리 기반 필터링 적용
+      let filteredPlaces = data.documents;
+      if (targetCoords) {
+        filteredPlaces = filteredPlaces.filter(place => {
+          if (!place.x || !place.y) return true;
+          
+          const placeLat = parseFloat(place.y);
+          const placeLng = parseFloat(place.x);
+          const distance = calculateDistance(targetCoords.lat, targetCoords.lng, placeLat, placeLng);
+          return distance <= 30; // 30km 이내
+        });
+        
+        console.log(`🎯 거리 필터링 후: ${filteredPlaces.length}개 장소`);
+      }
+      
+      const places = filteredPlaces.slice(0, 3).map(place => ({
         name: place.place_name,
         category: place.category_name,
         address: place.road_address_name || place.address_name,
         phone: place.phone,
-        url: place.place_url
+        url: place.place_url,
+        coordinates: {
+          lat: parseFloat(place.y),
+          lng: parseFloat(place.x)
+        }
       }));
       
       console.log(`✅ 찾은 장소들:`, places);
@@ -210,12 +240,37 @@ console.log(`📊 검색 결과:`, {
     // 2단계: 각 코스별로 실제 장소 검색
     const finalCourses = [];
     
+    // 데이트 지역의 기준 좌표 추출
+    let targetCoords = null;
+    try {
+      const geocodeUrl = `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(formData.dateLocation)}`;
+      const geocodeResponse = await fetch(geocodeUrl, {
+        headers: {
+          'Authorization': `KakaoAK ${KAKAO_API_KEY}`
+        }
+      });
+      
+      if (geocodeResponse.ok) {
+        const geocodeData = await geocodeResponse.json();
+        if (geocodeData.documents.length > 0) {
+          targetCoords = {
+            lat: parseFloat(geocodeData.documents[0].y),
+            lng: parseFloat(geocodeData.documents[0].x)
+          };
+          console.log(`📍 기준 좌표 설정: ${formData.dateLocation}`, targetCoords);
+        }
+      }
+    } catch (error) {
+      console.warn('기준 좌표 추출 실패:', error);
+    }
+    
     for (const course of courseStructure.courses) {
       const categoryCode = getCategoryCode(course.category);
       const realPlaces = await searchRealPlaces(
         formData.dateLocation, 
         course.searchKeyword, 
-        categoryCode
+        categoryCode,
+        targetCoords
       );
       
       let selectedPlace;
