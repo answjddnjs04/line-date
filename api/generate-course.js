@@ -69,7 +69,37 @@ if (!API_KEY || !KAKAO_API_KEY) {
       return 'FD6'; // 기본값: 음식점
     }
     
-    async function searchRealPlaces(location, keyword, category = 'FD6', targetCoords = null, isFirstPlace = false) {
+    // 검색 키워드 단순화 함수 (searchRealPlaces 함수 위에 추가)
+function simplifyKeyword(keyword) {
+  const keywordMap = {
+    '고급 브런치 카페': '브런치',
+    '브런치 카페': '브런치',
+    '미슐랭 레스토랑': '레스토랑',
+    '고급 이탈리안 레스토랑': '이탈리안',
+    '분위기 좋은 카페': '카페',
+    '명품거리 쇼핑': '쇼핑',
+    '야경 명소': '야경',
+    '미술관 전시': '미술관'
+  };
+  
+  // 매핑된 단순 키워드가 있으면 사용, 없으면 첫 번째 단어만 사용
+  return keywordMap[keyword] || keyword.split(' ')[0];
+}
+
+// 거리 계산 함수 추가
+function calculateDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+async function searchRealPlaces(location, keyword, category = 'FD6', targetCoords = null, isFirstPlace = false) {
   // 키워드를 단순화
   const simpleKeyword = simplifyKeyword(keyword);
   const searchQuery = `${location} ${simpleKeyword}`;
