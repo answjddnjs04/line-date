@@ -79,62 +79,79 @@ class DateCourseMap {
     }
 
     // 마커 생성
-    createMarker(position, number, title) {
-        const markerContent = `
-            <div style="
-                background: white;
-                border: 3px solid #667eea;
-                border-radius: 50%;
-                width: 35px;
-                height: 35px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: bold;
-                font-size: 14px;
-                color: #667eea;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            ">${number}</div>
-        `;
+createMarker(position, number, title) {
+    console.log(`🎯 마커 생성 중: ${number}. ${title}`, position);
+    
+    const markerContent = `
+        <div style="
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            z-index: 1000;
+        ">${number}</div>
+    `;
 
-        const customOverlay = new kakao.maps.CustomOverlay({
-            map: this.map,
-            position: position,
-            content: markerContent,
-            yAnchor: 0.5
-        });
+    const customOverlay = new kakao.maps.CustomOverlay({
+        position: position,
+        content: markerContent,
+        yAnchor: 0.5,
+        zIndex: 1000
+    });
 
-        // 인포윈도우
-        const infowindow = new kakao.maps.InfoWindow({
-            content: `<div style="padding:5px;font-size:12px;">${title}</div>`
-        });
+    // 지도에 표시
+    customOverlay.setMap(this.map);
+    console.log(`✅ 마커 지도에 추가됨: ${number}`);
 
-        // 마커 클릭 이벤트
-        kakao.maps.event.addListener(customOverlay, 'click', () => {
+    // 인포윈도우
+    const infowindow = new kakao.maps.InfoWindow({
+        content: `<div style="padding:5px;font-size:12px;">${title}</div>`
+    });
+
+    // DOM 요소에 클릭 이벤트 추가
+    const markerElement = customOverlay.getContent();
+    if (markerElement) {
+        markerElement.addEventListener('click', () => {
             infowindow.open(this.map, position);
         });
-
-        this.markers.push(customOverlay);
-        return customOverlay;
     }
+
+    this.markers.push(customOverlay);
+    return customOverlay;
+}
 
     // 경로 라인 생성
-    createPolyline(startPos, endPos, colorIndex) {
-        const linePath = [startPos, endPos];
-        const color = this.colors[colorIndex % this.colors.length];
+createPolyline(startPos, endPos, colorIndex) {
+    console.log(`📏 라인 생성 중: ${colorIndex + 1} → ${colorIndex + 2}`);
+    
+    const linePath = [startPos, endPos];
+    const color = this.colors[colorIndex % this.colors.length];
+    
+    console.log(`🎨 라인 색상: ${color}`);
 
-        const polyline = new kakao.maps.Polyline({
-            path: linePath,
-            strokeWeight: 5,
-            strokeColor: color,
-            strokeOpacity: 0.8,
-            strokeStyle: 'solid'
-        });
+    const polyline = new kakao.maps.Polyline({
+        path: linePath,
+        strokeWeight: 5,
+        strokeColor: color,
+        strokeOpacity: 0.8,
+        strokeStyle: 'solid',
+        zIndex: 500
+    });
 
-        polyline.setMap(this.map);
-        this.polylines.push(polyline);
-        return polyline;
-    }
+    polyline.setMap(this.map);
+    console.log(`✅ 라인 지도에 추가됨`);
+    
+    this.polylines.push(polyline);
+    return polyline;
+}
 
     // 지도에 데이트 코스 표시
 async displayCourses(courses) {
@@ -198,20 +215,28 @@ async displayCourses(courses) {
 }
 
     // 지도 범위 자동 조정
-    fitMapBounds(courses) {
-        if (courses.length === 0 || !this.map) return;
+fitMapBounds(courses) {
+    if (courses.length === 0 || !this.map) return;
 
-        const bounds = new kakao.maps.LatLngBounds();
-        courses.forEach(course => {
-            bounds.extend(course.position);
-        });
+    console.log(`🗺️ 지도 범위 조정 시작: ${courses.length}개 장소`);
+    
+    const bounds = new kakao.maps.LatLngBounds();
+    courses.forEach((course, index) => {
+        bounds.extend(course.position);
+        console.log(`📍 범위에 추가: ${index + 1}. ${course.title}`);
+    });
 
-        try {
-            this.map.setBounds(bounds, 50); // 50px 패딩
-        } catch (error) {
-            console.error('지도 범위 조정 실패:', error);
-        }
+    try {
+        this.map.setBounds(bounds, 80); // 80px 패딩으로 여유있게
+        console.log('✅ 지도 범위 조정 완료');
+        
+        // 추가로 중심점 확인
+        const center = this.map.getCenter();
+        console.log('🎯 지도 중심점:', center.getLat(), center.getLng());
+    } catch (error) {
+        console.error('지도 범위 조정 실패:', error);
     }
+}
 
     // 지도 초기화
 clearMap() {
