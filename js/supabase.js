@@ -81,7 +81,11 @@ class SupabaseClient {
         
         if (error) throw error;
         
-        console.log('✅ 회원가입 성공:', data.user?.email);
+        console.log('✅ 회원가입 성공:', {
+    email: data.user?.email,
+    emailConfirmed: data.user?.email_confirmed_at,
+    hasSession: !!data.session
+});
         
         // 이메일 인증이 비활성화되어 있다면 사용자가 바로 인증됨
         if (data.user && !data.user.email_confirmed_at) {
