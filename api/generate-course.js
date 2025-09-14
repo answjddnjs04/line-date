@@ -70,8 +70,13 @@ if (!API_KEY || !KAKAO_API_KEY) {
     }
     
     // 실제 장소 검색 함수 (디버그 버전)
-    async function searchRealPlaces(location, keyword, category = 'FD6') {
-      const searchQuery = `${keyword} ${location}`;
+    // 개선된 - 단순한 검색어 생성
+async function searchRealPlaces(location, keyword, category = 'FD6') {
+  // 키워드를 단순화
+  const simpleKeyword = simplifyKeyword(keyword);
+  const searchQuery = `${location} ${simpleKeyword}`;  // "강남 브런치"
+  
+  console.log(`🔍 검색 중: "${searchQuery}" (원본: "${keyword}")`);
       const searchUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(searchQuery)}&category_group_code=${category}&size=3&sort=accuracy`;
       
       console.log(`🔍 검색 중: "${searchQuery}" (카테고리: ${category})`);
@@ -82,6 +87,23 @@ if (!API_KEY || !KAKAO_API_KEY) {
     'Authorization': `KakaoAK ${KAKAO_API_KEY}`
   }
 });
+
+  // 검색 키워드 단순화 함수 (searchRealPlaces 함수 위에 추가)
+function simplifyKeyword(keyword) {
+  const keywordMap = {
+    '고급 브런치 카페': '브런치',
+    '브런치 카페': '브런치',
+    '미슐랭 레스토랑': '레스토랑',
+    '고급 이탈리안 레스토랑': '이탈리안',
+    '분위기 좋은 카페': '카페',
+    '명품거리 쇼핑': '쇼핑',
+    '야경 명소': '야경',
+    '미술관 전시': '미술관'
+  };
+  
+  // 매핑된 단순 키워드가 있으면 사용, 없으면 첫 번째 단어만 사용
+  return keywordMap[keyword] || keyword.split(' ')[0];
+}
 
 console.log(`🌐 카카오 API 응답 상태:`, response.status);
 
