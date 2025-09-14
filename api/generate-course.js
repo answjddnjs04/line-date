@@ -272,8 +272,8 @@ console.log(`📊 검색 결과:`, {
       const course = courseStructure.courses[i];
       const categoryCode = getCategoryCode(course.category);
       
-      // 첫 번째 장소는 거리 필터 없이 검색, 이후는 첫 번째 장소 기준으로 필터링
-      const filterCoords = i === 0 ? null : (firstPlaceCoords || targetCoords);
+      // 첫 번째 장소는 데이트 지역 기준으로만, 이후는 첫 번째 장소 기준으로 필터링
+      const filterCoords = i === 0 ? targetCoords : (firstPlaceCoords || targetCoords);
       const realPlaces = await searchRealPlaces(
         formData.dateLocation, 
         course.searchKeyword, 
