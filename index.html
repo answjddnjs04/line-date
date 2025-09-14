@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%); /* 60% 메인 컬러 */
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
             min-height: 100vh;
             color: #2c3e50;
         }
@@ -39,7 +39,7 @@
         }
 
         .subtitle {
-            color: #6c7b8a; /* 30% 보조 컬러 */
+            color: #6c7b8a;
             font-size: 1.1rem;
             margin-bottom: 30px;
         }
@@ -50,7 +50,7 @@
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             margin-bottom: 30px;
-            border: 1px solid #e8ecf4; /* 30% 보조 컬러 */
+            border: 1px solid #e8ecf4;
         }
 
         .form-grid {
@@ -68,7 +68,7 @@
         label {
             font-weight: 600;
             margin-bottom: 8px;
-            color: #34495e; /* 30% 보조 컬러 */
+            color: #34495e;
             font-size: 0.95rem;
         }
 
@@ -88,20 +88,8 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-        }
-
         .generate-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2); /* 10% 포인트 컬러 */
+            background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             border: none;
             padding: 15px 30px;
@@ -168,6 +156,13 @@
             margin-bottom: 10px;
         }
 
+        .result-concept {
+            color: #6c7b8a;
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
         .result-summary {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
@@ -189,7 +184,7 @@
         }
 
         .course-item {
-            background: #f8f9ff; /* 메인 컬러 변형 */
+            background: #f8f9ff;
             border: 2px solid #e8ecf4;
             border-radius: 15px;
             padding: 20px;
@@ -203,7 +198,7 @@
         }
 
         .course-time {
-            background: #667eea; /* 10% 포인트 컬러 */
+            background: #667eea;
             color: white;
             padding: 5px 12px;
             border-radius: 20px;
@@ -221,7 +216,7 @@
         }
 
         .course-location {
-            color: #6c7b8a; /* 30% 보조 컬러 */
+            color: #6c7b8a;
             margin-bottom: 10px;
             font-weight: 500;
         }
@@ -239,21 +234,6 @@
             border-radius: 10px;
             font-weight: bold;
             display: inline-block;
-        }
-
-        .error {
-            background: #fff5f5;
-            color: #e53e3e;
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid #e53e3e;
-            margin: 20px 0;
-        }
-        .result-concept {
-            color: #6c7b8a;
-            font-size: 1.1rem;
-            font-style: italic;
-            margin-top: 10px;
         }
 
         .real-place-badge {
@@ -303,6 +283,26 @@
         .kakao-link:hover {
             background: #fdd835;
             transform: translateY(-1px);
+        }
+
+        .error {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #e53e3e;
+            margin: 20px 0;
+        }
+
+        .debug-info {
+            background: #f0f8f0;
+            border: 1px solid #d4edda;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #155724;
         }
 
         @media (max-width: 768px) {
@@ -388,120 +388,201 @@
     </div>
 
     <script>
-        // Gemini API 설정 (실제 사용시에는 환경변수나 서버에서 관리해야 합니다)
-        const API_KEY = 'AIzaSyC7kzh-bgdWG8KJEYfP4JbAXR7L2YpicPs'; // 실제 API 키로 교체하세요
-        const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+        // 디버그 모드
+        const DEBUG_MODE = true;
 
-        document.getElementById('dateForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // 폼 데이터 수집
-            const formData = {
-                currentLocation: document.getElementById('currentLocation').value,
-                dateLocation: document.getElementById('dateLocation').value,
-                hasCar: document.getElementById('hasCar').value,
-                preferredFood: document.getElementById('preferredFood').value,
-                activities: document.getElementById('activities').value,
-                budget: document.getElementById('budget').value
-            };
-
-            // 로딩 표시
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('result').style.display = 'none';
-
-            try {
-                const datesCourse = await generateDateCourse(formData);
-                displayResult(datesCourse);
-            } catch (error) {
-                console.error('Error:', error);
-                displayError('데이트 코스 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
-            } finally {
-                document.getElementById('loading').style.display = 'none';
+        // 디버그 로그 함수
+        function debugLog(message, data = null) {
+            if (DEBUG_MODE) {
+                console.log(`🐛 DEBUG: ${message}`, data);
             }
+        }
+
+        // 초기 로딩 확인
+        debugLog('스크립트 로딩 완료');
+        
+        // DOM 로딩 확인
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('DOM 로딩 완료');
         });
 
-        async function generateDateCourse(formData) {
-            // 프롬프트 생성
-            const prompt = `
-            다음 조건을 바탕으로 하루 데이트 코스를 상세히 추천해주세요:
+        // 페이지 로딩 확인
+        window.addEventListener('load', function() {
+            debugLog('페이지 로딩 완료');
+        });
 
-            **조건:**
-            - 거주지역: ${formData.currentLocation}
-            - 데이트지역: ${formData.dateLocation}
-            - 자차유무: ${formData.hasCar === 'yes' ? '있음' : '없음'}
-            - 선호음식: ${formData.preferredFood || '제한없음'}
-            - 선호활동: ${formData.activities || '제한없음'}
-            - 예산: ${getBudgetText(formData.budget)}
+        // API 설정 (환경에 따라 다르게 설정)
+        const isLocalHost = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1' || 
+                           window.location.protocol === 'file:';
 
-            **요구사항:**
-            1. 시간순으로 4-6개의 코스 추천 (오전~저녁)
-            2. 각 코스별로 예상 소요시간, 예상비용 포함
-            3. 실제 존재하는 장소명 또는 지역명 사용
-            4. 총 예상 비용과 소요시간 계산
-            5. JSON 형식으로 응답
+        debugLog('실행 환경 확인', {
+            hostname: window.location.hostname,
+            protocol: window.location.protocol,
+            isLocalHost: isLocalHost
+        });
 
-            다음 JSON 형식으로 답변해주세요:
-            {
-                "totalCost": "총 예상비용 (예: 80,000원)",
-                "totalTime": "총 소요시간 (예: 8시간)",
-                "courses": [
+        // 폼 제출 이벤트 리스너
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('dateForm');
+            if (!form) {
+                console.error('❌ 폼 요소를 찾을 수 없습니다');
+                return;
+            }
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                debugLog('폼 제출 이벤트 발생');
+                
+                try {
+                    // 폼 데이터 수집
+                    const formData = {
+                        currentLocation: document.getElementById('currentLocation').value,
+                        dateLocation: document.getElementById('dateLocation').value,
+                        hasCar: document.getElementById('hasCar').value,
+                        preferredFood: document.getElementById('preferredFood').value,
+                        activities: document.getElementById('activities').value,
+                        budget: document.getElementById('budget').value
+                    };
+
+                    debugLog('수집된 폼 데이터', formData);
+
+                    // 로딩 표시
+                    showLoading();
+
+                    let datesCourse;
+                    if (isLocalHost) {
+                        debugLog('로컬 환경 - 데모 데이터 사용');
+                        datesCourse = await generateDemoData(formData);
+                    } else {
+                        debugLog('프로덕션 환경 - 실제 API 호출');
+                        datesCourse = await generateDateCourse(formData);
+                    }
+
+                    displayResult(datesCourse);
+                } catch (error) {
+                    console.error('❌ 오류 발생:', error);
+                    displayError(`데이트 코스 생성 중 오류가 발생했습니다: ${error.message}`);
+                } finally {
+                    hideLoading();
+                }
+            });
+        });
+
+        // 로딩 표시/숨김 함수
+        function showLoading() {
+            debugLog('로딩 표시');
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function hideLoading() {
+            debugLog('로딩 숨김');
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // 데모 데이터 생성 함수
+        async function generateDemoData(formData) {
+            debugLog('데모 데이터 생성 시작', formData);
+            
+            // API 호출 시뮬레이션을 위한 지연
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            const demoData = {
+                totalCost: "85,000원",
+                totalTime: "8시간",
+                concept: `${formData.dateLocation}에서의 로맨틱 데이트 코스`,
+                courses: [
                     {
-                        "time": "시간 (예: 10:00-12:00)",
-                        "title": "코스 제목",
-                        "location": "구체적인 장소명",
-                        "description": "코스 설명 (2-3줄)",
-                        "cost": "예상비용 (예: 15,000원)"
+                        time: "10:00-12:00",
+                        title: "브런치 카페",
+                        location: `${formData.dateLocation} 인기 브런치 카페`,
+                        address: `${formData.dateLocation} 소재`,
+                        phone: "02-1234-5678",
+                        url: "https://map.kakao.com",
+                        description: "분위기 좋은 카페에서 여유로운 브런치를 즐기며 데이트 시작. 인스타그램 감성 가득한 공간에서 대화 나누기",
+                        selectionReason: "해당 지역의 인기 브런치 맛집",
+                        cost: "25,000원",
+                        realPlace: false
+                    },
+                    {
+                        time: "12:30-15:00",
+                        title: "거리 산책 및 쇼핑",
+                        location: `${formData.dateLocation} 거리`,
+                        address: `${formData.dateLocation} 일대`,
+                        phone: "",
+                        url: "",
+                        description: `${formData.dateLocation}의 독특한 거리 문화를 체험하고 다양한 소품샵 구경하기. 커플 아이템도 함께 골라보세요`,
+                        selectionReason: "데이트 분위기에 적합한 장소",
+                        cost: "15,000원",
+                        realPlace: false
+                    },
+                    {
+                        time: "15:00-17:00",
+                        title: formData.activities || "카페 투어",
+                        location: `${formData.dateLocation} 디저트 카페`,
+                        address: `${formData.dateLocation} 소재`,
+                        phone: "02-9876-5432",
+                        url: "https://map.kakao.com",
+                        description: "달콤한 디저트와 함께 여유로운 오후 시간. 특별한 음료와 케이크로 달콤한 시간을 보내세요",
+                        selectionReason: "분위기 좋은 디저트 맛집",
+                        cost: "20,000원",
+                        realPlace: false
+                    },
+                    {
+                        time: "18:00-20:00",
+                        title: "저녁 식사",
+                        location: `${formData.dateLocation} ${formData.preferredFood || '이탈리안'} 맛집`,
+                        address: `${formData.dateLocation} 소재`,
+                        phone: "02-5555-6666",
+                        url: "https://map.kakao.com",
+                        description: `로맨틱한 분위기의 ${formData.preferredFood || '이탈리안'} 레스토랑에서 특별한 저녁 식사. 좋은 분위기 속에서 하루를 마무리`,
+                        selectionReason: "데이트하기 좋은 분위기의 맛집",
+                        cost: "25,000원",
+                        realPlace: false
                     }
                 ]
-            }
-            `;
+            };
 
-            // API 호출
-            const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+            debugLog('데모 데이터 생성 완료', demoData);
+            return demoData;
+        }
+
+        // 실제 API 호출 함수 (프로덕션용)
+        async function generateDateCourse(formData) {
+            debugLog('실제 API 호출 시작');
+            
+            const response = await fetch('/api/generate-course', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: prompt
-                        }]
-                    }]
-                })
+                body: JSON.stringify({ formData })
             });
 
             if (!response.ok) {
-                throw new Error('API 호출 실패');
+                throw new Error(`API 호출 실패: ${response.status}`);
             }
 
-            const data = await response.json();
-            const responseText = data.candidates[0].content.parts[0].text;
-            
-            // JSON 파싱
-            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-                return JSON.parse(jsonMatch[0]);
-            } else {
-                throw new Error('응답 파싱 실패');
-            }
+            const result = await response.json();
+            debugLog('API 응답 받음', result);
+            return result;
         }
 
-        function getBudgetText(budget) {
-            switch(budget) {
-                case 'low': return '5만원 이하';
-                case 'medium': return '5-10만원';
-                case 'high': return '10만원 이상';
-                default: return '제한없음';
-            }
-        }
-
+        // 결과 표시 함수
         function displayResult(datesCourse) {
+            debugLog('결과 표시 시작', datesCourse);
+            
             const resultDiv = document.getElementById('result');
+            if (!resultDiv) {
+                console.error('❌ 결과 div를 찾을 수 없습니다');
+                return;
+            }
             
             const html = `
                 <div class="result-header">
                     <h2 class="result-title">🎯 맞춤 데이트 코스</h2>
+                    ${datesCourse.concept ? `<p class="result-concept">${datesCourse.concept}</p>` : ''}
                 </div>
                 
                 <div class="result-summary">
@@ -513,13 +594,31 @@
                     ${datesCourse.courses.map(course => `
                         <div class="course-item">
                             <div class="course-time">${course.time}</div>
-                            <div class="course-title">${course.title}</div>
+                            <div class="course-title">
+                                ${course.title}
+                                ${course.realPlace ? '<span class="real-place-badge">실제 장소</span>' : ''}
+                            </div>
                             <div class="course-location">📍 ${course.location}</div>
+                            ${course.address ? `<div class="course-address">🏠 ${course.address}</div>` : ''}
+                            ${course.phone ? `<div class="course-phone">📞 ${course.phone}</div>` : ''}
                             <div class="course-description">${course.description}</div>
-                            <div class="course-cost">${course.cost}</div>
+                            ${course.selectionReason ? `<div class="selection-reason">💡 ${course.selectionReason}</div>` : ''}
+                            <div class="course-actions">
+                                <div class="course-cost">${course.cost}</div>
+                                ${course.url ? `<a href="${course.url}" target="_blank" class="kakao-link">카카오맵에서 보기</a>` : ''}
+                            </div>
                         </div>
                     `).join('')}
                 </div>
+                
+                ${DEBUG_MODE ? `
+                <div class="debug-info">
+                    <strong>디버그 정보:</strong><br>
+                    환경: ${isLocalHost ? '로컬 (데모 모드)' : '프로덕션'}<br>
+                    생성된 코스 수: ${datesCourse.courses.length}개<br>
+                    실제 장소 수: ${datesCourse.courses.filter(c => c.realPlace).length}개
+                </div>
+                ` : ''}
             `;
             
             resultDiv.innerHTML = html;
@@ -527,63 +626,37 @@
             
             // 결과로 스크롤
             resultDiv.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function displayError(message) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = `<div class="error">${message}</div>`;
-            resultDiv.style.display = 'block';
-        }
-
-        // 개발 환경에서 테스트용 데모 데이터 (로컬에서만 작동)
-        function getDemoData() {
-            return {
-                totalCost: "75,000원",
-                totalTime: "8시간",
-                courses: [
-                    {
-                        time: "10:00-12:00",
-                        title: "브런치 카페",
-                        location: "홍대 앤트러사이트",
-                        description: "분위기 좋은 카페에서 여유로운 브런치를 즐기며 데이트 시작. 인스타그램 감성 가득한 공간에서 대화 나누기",
-                        cost: "25,000원"
-                    },
-                    {
-                        time: "12:30-15:00",
-                        title: "홍대 거리 산책",
-                        location: "홍대 걷고싶은거리",
-                        description: "홍대의 독특한 거리 문화를 체험하고 다양한 소품샵 구경하기. 거리 공연도 감상할 수 있어요",
-                        cost: "10,000원"
-                    },
-                    {
-                        time: "15:00-17:00",
-                        title: "영화 관람",
-                        location: "CGV 홍대",
-                        description: "최신 영화를 함께 관람하며 특별한 시간 보내기. 영화 후 감상 나누기",
-                        cost: "20,000원"
-                    },
-                    {
-                        time: "18:00-20:00",
-                        title: "맛집 디너",
-                        location: "홍대 파스타 맛집",
-                        description: "로맨틱한 분위기의 이탈리안 레스토랑에서 특별한 저녁 식사. 와인과 함께 즐기는 코스 요리",
-                        cost: "50,000원"
-                    }
-                ]
-            };
-        }
-
-        // 로컬 개발 환경에서만 데모 모드로 작동
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            console.log('로컬 개발 환경 - 데모 모드로 실행됩니다.');
             
-            // 기존 generateDateCourse 함수를 데모용으로 오버라이드
-            window.generateDateCourse = async function(formData) {
-                // 실제 API 호출 시뮬레이션을 위한 지연
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                return getDemoData();
-            };
+            debugLog('결과 표시 완료');
         }
+
+        // 오류 표시 함수
+        function displayError(message) {
+            debugLog('오류 표시:', message);
+            
+            const resultDiv = document.getElementById('result');
+            if (resultDiv) {
+                resultDiv.innerHTML = `<div class="error">❌ ${message}</div>`;
+                resultDiv.style.display = 'block';
+            } else {
+                alert(`오류: ${message}`);
+            }
+        }
+
+        // 전역 오류 핸들러
+        window.addEventListener('error', function(event) {
+            console.error('❌ 전역 오류:', event.error);
+            debugLog('전역 오류 발생', {
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno,
+                error: event.error
+            });
+        });
+
+        // 초기화 완료 로그
+        debugLog('JavaScript 초기화 완료');
     </script>
 </body>
 </html>
