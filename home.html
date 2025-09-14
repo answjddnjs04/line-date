@@ -26,20 +26,55 @@
         }
 
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             padding: 20px 0;
             border-bottom: 1px solid #e8ecf4;
             margin-bottom: 40px;
         }
 
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.1);
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            background: #fafbfc;
+            border: 2px solid #e8ecf4;
+            border-radius: 25px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:hover {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-placeholder {
+            color: #6c7b8a;
+            font-size: 1.1rem;
+        }
+
+        .search-icon {
+            color: #6c7b8a;
+            font-size: 1.2rem;
         }
 
         .nav-buttons {
@@ -228,6 +263,17 @@
         }
 
         @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-bar {
+                order: -1;
+                width: 100%;
+                max-width: none;
+            }
+            
             .hero-title {
                 font-size: 2.5rem;
             }
@@ -250,8 +296,8 @@
             }
             
             .nav-buttons {
-                flex-direction: column;
-                gap: 10px;
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -259,11 +305,17 @@
 <body>
     <div class="container">
         <header>
-            <div class="logo">💕 데이트 코스 플래너</div>
-            <div class="nav-buttons">
-                <div id="userInfo" class="user-info" style="display: none;"></div>
-                <a href="login.html" id="loginBtn" class="nav-btn login-btn">로그인</a>
-                <button id="logoutBtn" class="nav-btn logout-btn" style="display: none;">로그아웃</button>
+            <div class="header-content">
+                <div class="logo">💕</div>
+                <div class="search-bar" onclick="location.href='search.html'">
+                    <span class="search-placeholder">데이트 장소, 맛집, 카페 검색...</span>
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="nav-buttons">
+                    <div id="userInfo" class="user-info" style="display: none;"></div>
+                    <a href="login.html" id="loginBtn" class="nav-btn login-btn">로그인</a>
+                    <button id="logoutBtn" class="nav-btn logout-btn" style="display: none;">로그아웃</button>
+                </div>
             </div>
         </header>
 
