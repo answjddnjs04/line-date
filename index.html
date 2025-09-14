@@ -689,6 +689,18 @@
                                 <div class="course-cost">${course.cost}</div>
                                 ${course.url ? `<a href="${course.url}" target="_blank" class="kakao-link">카카오맵에서 보기</a>` : ''}
                             </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+                            <div class="course-location">📍 ${course.location}</div>
+                            ${course.address ? `<div class="course-address">🏠 ${course.address}</div>` : ''}
+                            ${course.phone ? `<div class="course-phone">📞 ${course.phone}</div>` : ''}
+                            <div class="course-description">${course.description}</div>
+                            ${course.selectionReason ? `<div class="selection-reason">💡 ${course.selectionReason}</div>` : ''}
+                            <div class="course-actions">
+                                <div class="course-cost">${course.cost}</div>
+                                ${course.url ? `<a href="${course.url}" target="_blank" class="kakao-link">카카오맵에서 보기</a>` : ''}
+                            </div>
                         </div>
                     `).join('')}
                 </div>
