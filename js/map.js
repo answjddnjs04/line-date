@@ -29,13 +29,28 @@ class DateCourseMap {
 
             kakao.maps.load(() => {
                 const container = document.getElementById('map');
+                if (!container) {
+                    reject(new Error('지도 컨테이너를 찾을 수 없습니다.'));
+                    return;
+                }
+                
+                // 컨테이너가 보이는지 확인
+                if (container.offsetWidth === 0 || container.offsetHeight === 0) {
+                    reject(new Error('지도 컨테이너가 화면에 표시되지 않았습니다.'));
+                    return;
+                }
+                
                 const options = {
                     center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심
                     level: 3
                 };
                 
-                this.map = new kakao.maps.Map(container, options);
-                resolve();
+                try {
+                    this.map = new kakao.maps.Map(container, options);
+                    resolve();
+                } catch (error) {
+                    reject(new Error(`지도 생성 실패: ${error.message}`));
+                }
             });
         });
     }
@@ -166,14 +181,18 @@ class DateCourseMap {
 
     // 지도 범위 자동 조정
     fitMapBounds(courses) {
-        if (courses.length === 0) return;
+        if (courses.length === 0 || !this.map) return;
 
         const bounds = new kakao.maps.LatLngBounds();
         courses.forEach(course => {
             bounds.extend(course.position);
         });
 
-        this.map.setBounds(bounds, 50); // 50px 패딩
+        try {
+            this.map.setBounds(bounds, 50); // 50px 패딩
+        } catch (error) {
+            console.error('지도 범위 조정 실패:', error);
+        }
     }
 
     // 지도 초기화
@@ -206,6 +225,13 @@ let dateCourseMap = null;
 
 // 지도 초기화 함수
 async function initializeDateMap() {
+    // 지도 컨테이너가 있는지 먼저 확인
+    const mapContainer = document.getElementById('map');
+    if (!mapContainer) {
+        console.warn('지도 컨테이너가 아직 생성되지 않았습니다.');
+        return false;
+    }
+
     try {
         dateCourseMap = new DateCourseMap();
         await dateCourseMap.initMap();
