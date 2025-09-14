@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - 데이트 코스 플래너 💕</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2c3e50;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e8ecf4;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6c7b8a;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #6c7b8a;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #34495e;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e8ecf4;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .auth-button {
+            width: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .auth-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-to-home {
+            text-align: center;
+        }
+
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e53e3e;
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            background: #f0fff4;
+            color: #38a169;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #38a169;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .signup-form {
+            display: none;
+        }
+
+        .signup-form.active {
+            display: block;
+        }
+
+        .login-form.active {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                padding: 30px 25px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="logo">💕 데이트 플래너</h1>
+        <p class="subtitle">로그인하고 데이트 코스를 저장해보세요</p>
+
+        <div class="auth-tabs">
+            <button class="tab-button active" onclick="switchTab('login')">로그인</button>
+            <button class="tab-button" onclick="switchTab('signup')">회원가입</button>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+        <div id="successMessage" class="success-message" style="display: none;"></div>
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>처리 중...</p>
+        </div>
+
+        <!-- 로그인 폼 -->
+        <form id="loginForm" class="login-form active">
+            <div class="form-group">
+                <label for="loginEmail">이메일</label>
+                <input type="email" id="loginEmail" placeholder="your@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">비밀번호</label>
+                <input type="password" id="loginPassword" placeholder="비밀번호를 입력하세요" required>
+            </div>
+            
+            <button type="submit" class="auth-button">로그인</button>
+        </form>
+
+        <!-- 회원가입 폼 -->
+        <form id="signupForm" class="signup-form">
+            <div class="form-group">
+                <label for="signupEmail">이메일</label>
+                <input type="email" id="signupEmail" placeholder="your@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="signupPassword">비밀번호</label>
+                <input type="password" id="signupPassword" placeholder="6자 이상 입력하세요" required minlength="6">
+            </div>
+            
+            <div class="form-group">
+                <label for="signupConfirmPassword">비밀번호 확인</label>
+                <input type="password" id="signupConfirmPassword" placeholder="비밀번호를 다시 입력하세요" required minlength="6">
+            </div>
+            
+            <div class="form-group">
+                <label for="signupNickname">닉네임 (선택사항)</label>
+                <input type="text" id="signupNickname" placeholder="사용할 닉네임을 입력하세요">
+            </div>
+            
+            <button type="submit" class="auth-button">회원가입</button>
+        </form>
+
+        <div class="back-to-home">
+            <a href="index.html" class="back-link">← 홈으로 돌아가기</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import './js/supabase.js';
+
+        // 탭 전환 함수
+        window.switchTab = function(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const tabButtons = document.querySelectorAll('.tab-button');
+            
+            // 모든 탭 버튼 비활성화
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.querySelector('.tab-button').classList.add('active');
+                loginForm.classList.add('active');
+                signupForm.classList.remove('active');
+            } else {
+                document.querySelectorAll('.tab-button')[1].classList.add('active');
+                signupForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+            
+            clearMessages();
+        }
+
+        // 메시지 표시/숨김 함수
+        function showMessage(message, type = 'error') {
+            clearMessages();
+            const messageEl = document.getElementById(type === 'error' ? 'errorMessage' : 'successMessage');
+            messageEl.textContent = message;
+            messageEl.style.display = 'block';
+        }
+
+        function clearMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // 로그인 폼 처리
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMessages();
+            showLoading();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                const result = await window.supabaseClient.signIn(email, password);
+                
+                if (result.success) {
+                    showMessage('로그인 성공! 홈으로 이동합니다.', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    showMessage(result.error || '로그인에 실패했습니다.');
+                }
+            } catch (error) {
+                showMessage('로그인 중 오류가 발생했습니다.');
+                console.error('로그인 오류:', error);
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // 회원가입 폼 처리
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMessages();
+            
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const nickname = document.getElementById('signupNickname').value;
+            
+            // 비밀번호 확인
+            if (password !== confirmPassword) {
+                showMessage('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('비밀번호는 6자 이상이어야 합니다.');
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                const userData = nickname ? { nickname } : {};
+                const result = await window.supabaseClient.signUp(email, password, userData);
+                
+                if (result.success) {
+                    showMessage('회원가입이 완료되었습니다! 자동으로 로그인됩니다.', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    showMessage(result.error || '회원가입에 실패했습니다.');
+                }
+            } catch (error) {
+                showMessage('회원가입 중 오류가 발생했습니다.');
+                console.error('회원가입 오류:', error);
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // 페이지 로드시 이미 로그인되어 있다면 홈으로 리다이렉트
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (window.supabaseClient?.isAuthenticated()) {
+                    window.location.href = 'index.html';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
