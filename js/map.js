@@ -82,27 +82,29 @@ class DateCourseMap {
 createMarker(position, number, title) {
     console.log(`🎯 마커 생성 중: ${number}. ${title}`, position);
     
-    const markerContent = `
-        <div style="
-            background: white;
-            border: 3px solid #667eea;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            color: #667eea;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            z-index: 1000;
-        ">${number}</div>
+    // DOM 요소 직접 생성
+    const markerDiv = document.createElement('div');
+    markerDiv.style.cssText = `
+        background: white;
+        border: 3px solid #667eea;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+        color: #667eea;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        cursor: pointer;
+        z-index: 1000;
     `;
+    markerDiv.textContent = number;
 
     const customOverlay = new kakao.maps.CustomOverlay({
         position: position,
-        content: markerContent,
+        content: markerDiv,
         yAnchor: 0.5,
         zIndex: 1000
     });
@@ -116,13 +118,11 @@ createMarker(position, number, title) {
         content: `<div style="padding:5px;font-size:12px;">${title}</div>`
     });
 
-    // DOM 요소에 클릭 이벤트 추가
-    const markerElement = customOverlay.getContent();
-    if (markerElement) {
-        markerElement.addEventListener('click', () => {
-            infowindow.open(this.map, position);
-        });
-    }
+    // 마커 클릭 이벤트 추가
+    markerDiv.addEventListener('click', () => {
+        console.log(`🖱️ 마커 클릭: ${title}`);
+        infowindow.open(this.map, position);
+    });
 
     this.markers.push(customOverlay);
     return customOverlay;
