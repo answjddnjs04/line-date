@@ -257,10 +257,8 @@ clearMap() {
         });
         this.polylines = [];
         
-        // 지도 객체 정리
-        if (this.map) {
-            this.map = null;
-        }
+        // 지도 객체는 제거하지 않음 (재사용)
+        console.log('✅ 지도 내용만 정리 완료');
     } catch (error) {
         console.warn('지도 정리 중 오류 무시:', error);
     }
