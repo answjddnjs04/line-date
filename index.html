@@ -713,19 +713,20 @@ setTimeout(async () => {
     
     if (!isLocalHost && typeof kakao !== 'undefined') {
         try {
-            // 기존 지도 인스턴스 제거
-            if (window.dateCourseMap) {
+            // 지도가 없으면 새로 생성, 있으면 내용만 지움
+            if (!window.dateCourseMap) {
+                const initSuccess = await initializeDateMap();
+                if (!initSuccess) {
+                    console.warn('지도 초기화 실패');
+                    return;
+                }
+            } else {
+                // 기존 마커/라인만 제거 (지도 객체는 유지)
                 window.dateCourseMap.clearMap();
             }
             
-            // 지도 초기화
-            const initSuccess = await initializeDateMap();
-            if (initSuccess) {
-                debugLog('지도 초기화 성공, 코스 표시 시작');
-                await displayDateCourseOnMap(datesCourse.courses);
-            } else {
-                console.warn('지도 초기화 실패');
-            }
+            debugLog('지도 준비 완료, 코스 표시 시작');
+            await displayDateCourseOnMap(datesCourse.courses);
         } catch (error) {
             console.error('지도 표시 오류:', error);
         }
