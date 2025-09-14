@@ -707,31 +707,36 @@
             resultDiv.style.display = 'block';
             
             // 지도에 데이트 코스 표시
-if (!isLocalHost) {
-    setTimeout(async () => {
-        if (typeof kakao !== 'undefined') {
-            // 기존 지도 인스턴스 완전히 제거
-            if (dateCourseMap) {
-                dateCourseMap.clearMap();
-                dateCourseMap = null;
+// 지도에 데이트 코스 표시
+setTimeout(async () => {
+    debugLog('지도 표시 시작', datesCourse.courses);
+    
+    if (!isLocalHost && typeof kakao !== 'undefined') {
+        try {
+            // 기존 지도 인스턴스 제거
+            if (window.dateCourseMap) {
+                window.dateCourseMap.clearMap();
             }
             
-            // 지도 컨테이너 완전히 재생성
-            const mapContainer = document.getElementById('map');
-            if (mapContainer) {
-                mapContainer.innerHTML = ''; // 내부 완전히 비우기
-            }
-            
-            // 새로 초기화
+            // 지도 초기화
             const initSuccess = await initializeDateMap();
-            if (!initSuccess) {
-                console.warn('지도 초기화 실패로 지도 표시를 건너뜁니다.');
-                return;
+            if (initSuccess) {
+                debugLog('지도 초기화 성공, 코스 표시 시작');
+                await displayDateCourseOnMap(datesCourse.courses);
+            } else {
+                console.warn('지도 초기화 실패');
             }
-            await displayDateCourseOnMap(datesCourse.courses);
+        } catch (error) {
+            console.error('지도 표시 오류:', error);
         }
-    }, 1500); // 시간을 1.5초로 증가
-}
+    } else {
+        // 로컬 환경에서는 지도 컨테이너 숨김
+        const mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+            mapContainer.style.display = 'none';
+        }
+    }
+}, 1000);
             
             // 결과로 스크롤
             resultDiv.scrollIntoView({ behavior: 'smooth' });
