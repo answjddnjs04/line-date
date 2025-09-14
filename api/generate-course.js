@@ -266,14 +266,19 @@ console.log(`📊 검색 결과:`, {
     
     // 중복 처리를 위한 변수
     const usedPlaceNames = [];
+    let firstPlaceCoords = null; // 첫 번째 장소 좌표 저장
     
-    for (const course of courseStructure.courses) {
+    for (let i = 0; i < courseStructure.courses.length; i++) {
+      const course = courseStructure.courses[i];
       const categoryCode = getCategoryCode(course.category);
+      
+      // 첫 번째 장소는 거리 필터 없이 검색, 이후는 첫 번째 장소 기준으로 필터링
+      const filterCoords = i === 0 ? null : (firstPlaceCoords || targetCoords);
       const realPlaces = await searchRealPlaces(
         formData.dateLocation, 
         course.searchKeyword, 
         categoryCode,
-        targetCoords
+        filterCoords
       );
       
       let selectedPlace;
@@ -299,6 +304,12 @@ console.log(`📊 검색 결과:`, {
         
         if (selectedPlace) {
           usedPlaceNames.push(selectedPlace.name);
+          
+          // 첫 번째 장소의 좌표를 저장하여 이후 장소들의 기준점으로 사용
+          if (i === 0 && selectedPlace.coordinates) {
+            firstPlaceCoords = selectedPlace.coordinates;
+            console.log(`📍 첫 번째 장소 기준 좌표 설정:`, firstPlaceCoords);
+          }
           
           // 선정 이유 생성
           const reasons = [];
