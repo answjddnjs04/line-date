@@ -13,37 +13,37 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9ff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f6f7;
             height: 100vh;
             overflow: hidden;
         }
 
+        /* 헤더 */
         .header {
             background: white;
-            padding: 10px 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #d1d8e4;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
             position: relative;
             z-index: 1000;
         }
 
         .header-content {
+            width: 100%;
             max-width: 1400px;
             margin: 0 auto;
             display: flex;
             align-items: center;
             gap: 20px;
-            justify-content: flex-start;
         }
 
-        .home-btn {
-            font-size: 2rem;
+        .logo {
+            font-size: 1.5rem;
             text-decoration: none;
-            transition: transform 0.2s ease;
-        }
-
-        .home-btn:hover {
-            transform: scale(1.1);
+            color: #03c75a;
         }
 
         .search-container {
@@ -54,119 +54,120 @@
 
         .search-input {
             width: 100%;
-            padding: 15px 50px 15px 20px;
-            font-size: 1.1rem;
-            border: 2px solid #e8ecf4;
-            border-radius: 25px;
+            height: 38px;
+            padding: 0 40px 0 16px;
+            font-size: 14px;
+            border: 2px solid #03c75a;
+            border-radius: 2px;
             outline: none;
-            background: #fafbfc;
-            transition: all 0.3s ease;
+            background: white;
         }
 
         .search-input:focus {
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #00a644;
         }
 
         .search-icon {
             position: absolute;
-            right: 15px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #6c7b8a;
-            font-size: 1.2rem;
+            color: #666;
+            font-size: 16px;
         }
 
+        /* 메인 컨테이너 */
         .main-container {
             display: flex;
-            height: calc(100vh - 80px);
+            height: calc(100vh - 60px);
         }
 
+        /* 왼쪽 패널 */
         .left-panel {
-            width: 25%;
+            width: 380px;
             background: white;
-            border-right: 1px solid #e8ecf4;
+            border-right: 1px solid #e4e8eb;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
-        .panel-body {
+        .panel-tabs {
             display: flex;
+            height: 48px;
+            border-bottom: 1px solid #e4e8eb;
+        }
+
+        .tab-item {
             flex: 1;
-        }
-
-        .nav-buttons {
             display: flex;
-            flex-direction: column;
-            width: 60px;
-            border-right: 1px solid #e8ecf4;
-            background: #f8f9ff;
-        }
-
-        .nav-btn {
-            height: 60px;
-            background: transparent;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
             border: none;
-            border-bottom: 1px solid #e8ecf4;
+            border-right: 1px solid #e4e8eb;
+            font-size: 14px;
+            color: #666;
             cursor: pointer;
-            transition: background-color 0.2s ease;
         }
 
-        .nav-btn:last-child {
-            border-bottom: none;
+        .tab-item:last-child {
+            border-right: none;
         }
 
-        .nav-btn:hover {
-            background: #f0f2ff;
+        .tab-item.active {
+            background: white;
+            color: #333;
+            font-weight: 500;
         }
 
-        .search-content {
+        /* 패널 컨텐츠 */
+        .panel-content {
             flex: 1;
             overflow-y: auto;
         }
 
-        .search-header {
-            padding: 15px;
-            border-bottom: 1px solid #f0f2ff;
-        }
-
         .location-info {
-            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f3f4;
+            background: #fbfbfb;
         }
 
         .location-badge {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            background: #e8f4fd;
+            color: #1e88e5;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .region-header {
+            padding: 16px;
+            border-bottom: 1px solid #f1f3f4;
         }
 
         .region-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 20px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
         }
 
-        .region-title h2 {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin: 0;
+        .region-subtitle {
+            color: #666;
+            font-size: 13px;
         }
 
-        .update-info {
-            color: #6c7b8a;
-            font-size: 0.85rem;
-        }
-
+        /* 광고 배너 */
         .ad-banner {
-            background: #f8f9ff;
-            border-radius: 12px;
+            margin: 12px 16px;
             padding: 12px;
-            margin: 15px 0;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border: 1px solid #e8ecf4;
             position: relative;
         }
 
@@ -179,12 +180,13 @@
         .ad-icon {
             width: 40px;
             height: 40px;
-            background: #4caf50;
+            background: linear-gradient(45deg, #667eea, #764ba2);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            color: white;
+            font-size: 18px;
         }
 
         .ad-text {
@@ -193,14 +195,14 @@
 
         .ad-title {
             font-weight: 600;
-            font-size: 0.9rem;
-            color: #2c3e50;
+            font-size: 14px;
+            color: #333;
             margin-bottom: 2px;
         }
 
         .ad-subtitle {
-            color: #6c7b8a;
-            font-size: 0.8rem;
+            color: #666;
+            font-size: 12px;
         }
 
         .ad-label {
@@ -209,70 +211,69 @@
             right: 8px;
             background: #ff9800;
             color: white;
-            font-size: 0.7rem;
+            font-size: 10px;
             padding: 2px 6px;
             border-radius: 4px;
             font-weight: 600;
         }
 
-        .smart-around {
-            margin: 20px 0;
-        }
-
-        .smart-title {
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 1.1rem;
-        }
-
+        /* 섹션 헤더 */
         .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 20px 0 15px 0;
+            padding: 16px;
+            border-bottom: 1px solid #f1f3f4;
+            background: #fafafa;
         }
 
-        .section-header h3 {
-            font-size: 1.2rem;
-            color: #2c3e50;
-            margin: 0;
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
         }
 
-        .more-btn {
-            background: none;
-            border: none;
-            color: #1976d2;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
-
+        /* 검색 결과 */
         .search-results {
-            padding: 0 15px;
+            padding: 0;
         }
 
         .result-item {
             display: flex;
-            padding: 15px 0;
-            border-bottom: 1px solid #f0f2ff;
+            padding: 16px;
+            border-bottom: 1px solid #f1f3f4;
             cursor: pointer;
             transition: background-color 0.2s ease;
             position: relative;
         }
 
         .result-item:hover {
-            background: #f8f9ff;
+            background: #f8f9fa;
         }
 
         .result-image {
+            width: 80px;
+            height: 60px;
             margin-right: 12px;
             position: relative;
+            flex-shrink: 0;
         }
 
         .result-image img {
-            width: 80px;
-            height: 60px;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 6px;
+            background: #f1f3f4;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #f1f3f4;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
         }
 
         .image-count {
@@ -281,77 +282,101 @@
             right: 4px;
             background: rgba(0,0,0,0.7);
             color: white;
-            font-size: 0.7rem;
+            font-size: 10px;
             padding: 2px 4px;
             border-radius: 4px;
         }
 
         .result-info {
             flex: 1;
+            min-width: 0;
         }
 
         .result-title {
             font-weight: 600;
-            color: #2c3e50;
+            color: #333;
             margin-bottom: 4px;
-            font-size: 0.95rem;
-        }
-
-        .result-type {
-            color: #6c7b8a;
-            font-weight: normal;
-            font-size: 0.8rem;
-        }
-
-        .result-address {
-            color: #6c7b8a;
-            font-size: 0.85rem;
-            margin-bottom: 6px;
+            font-size: 15px;
             line-height: 1.3;
         }
 
+        .result-category {
+            color: #666;
+            font-size: 13px;
+            margin-left: 6px;
+        }
+
+        .result-address {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
         .result-rating {
-            font-size: 0.8rem;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .star {
+        .rating-star {
             color: #ff9800;
-            margin-right: 8px;
         }
 
-        .reviews, .price {
-            color: #6c7b8a;
-            margin-right: 8px;
+        .rating-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .rating-reviews, .rating-price {
+            color: #666;
         }
 
         .bookmark-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
             background: none;
             border: none;
-            font-size: 1.2rem;
+            font-size: 18px;
             color: #ddd;
             cursor: pointer;
             padding: 5px;
-            position: absolute;
-            top: 15px;
-            right: 0;
         }
 
         .bookmark-btn:hover {
             color: #ffc107;
         }
 
+        /* 지도 영역 */
         .map-container {
             flex: 1;
             position: relative;
+            background: #f5f6f7;
         }
 
-        #map {
+        .map-placeholder {
             width: 100%;
             height: 100%;
-            position: relative;
-            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #999;
+            font-size: 16px;
         }
 
+        .map-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* 반응형 */
         @media (max-width: 768px) {
             .main-container {
                 flex-direction: column;
@@ -359,19 +384,41 @@
             
             .left-panel {
                 width: 100%;
-                height: 40%;
+                height: 50%;
             }
             
             .map-container {
-                height: 60%;
+                height: 50%;
             }
+
+            .header-content {
+                gap: 12px;
+            }
+        }
+
+        /* 스크롤바 스타일링 */
+        .panel-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .panel-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .panel-content::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .panel-content::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-content">
-            <a href="home.html" class="home-btn">💕</a>
+            <a href="home.html" class="logo">💕</a>
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="데이트 장소, 맛집, 카페 검색...">
                 <span class="search-icon">🔍</span>
@@ -381,55 +428,53 @@
 
     <div class="main-container">
         <div class="left-panel">
-            <div class="panel-body">
-                <div class="nav-buttons">
-                    <div class="nav-btn"></div>
-                    <div class="nav-btn"></div>
-                    <div class="nav-btn"></div>
-                    <div class="nav-btn"></div>
-                    <div class="nav-btn"></div>
+            <div class="panel-tabs">
+                <button class="tab-item active">장소</button>
+                <button class="tab-item">길찾기</button>
+                <button class="tab-item">저장</button>
+            </div>
+            
+            <div class="panel-content">
+                <div class="location-info">
+                    <div class="location-badge">📍 현재 위치: 경상남도</div>
                 </div>
                 
-                <div class="search-content">
-                <div class="search-header">
-                    <div class="location-info">
-                        <div class="location-badge">🎯 지도엠 업데이트 안내 - 대중교통 경유지 계단...</div>
-                    </div>
-                    
-                    <div class="region-title">
-                        <h2>경상북도</h2>
-                        <span class="update-info">오늘 시간</span>
-                    </div>
-                    
-                    <div class="ad-banner">
-                        <div class="ad-content">
-                            <div class="ad-icon">🏢</div>
-                            <div class="ad-text">
-                                <div class="ad-title">쿠팡 비켓볼레이스 공식 입점 플래...</div>
-                                <div class="ad-subtitle">더 높은 매출 성장 기회</div>
-                            </div>
-                            <span class="ad-label">AD</span>
+                <div class="region-header">
+                    <div class="region-title">주변 장소</div>
+                    <div class="region-subtitle">데이트하기 좋은 장소들을 찾아보세요</div>
+                </div>
+                
+                <div class="ad-banner">
+                    <div class="ad-content">
+                        <div class="ad-icon">💕</div>
+                        <div class="ad-text">
+                            <div class="ad-title">완벽한 데이트 코스 추천</div>
+                            <div class="ad-subtitle">AI가 제안하는 맞춤형 데이트 플랜</div>
                         </div>
+                        <span class="ad-label">AD</span>
                     </div>
-                    
-                    <div class="smart-around">
-                        <div class="smart-title">Smart Around</div>
-                    </div>
-                    
-                    <div class="section-header">
-                        <h3>추천</h3>
-                        <button class="more-btn">저녁 시간대 추천순 ⌄</button>
-                    </div>
+                </div>
+                
+                <div class="section-header">
+                    <div class="section-title">추천 데이트 장소</div>
                 </div>
                 
                 <div class="search-results">
                     <div class="result-item">
+                        <div class="result-image">
+                            <div class="image-placeholder">이미지</div>
+                        </div>
                         <div class="result-info">
-                            <div class="result-title">영천수퍼동물 <span class="result-type">지원하점장</span></div>
-                            <div class="result-address">경상북도 합천군 율곡면 영전리 464-7</div>
+                            <div class="result-title">
+                                로맨틱 카페
+                                <span class="result-category">카페</span>
+                            </div>
+                            <div class="result-address">분위기 좋은 데이트 카페입니다</div>
                             <div class="result-rating">
-                                <span class="star">★ 3.86</span>
-                                <span class="reviews">리뷰 29</span>
+                                <span class="rating-star">★</span>
+                                <span class="rating-value">4.5</span>
+                                <span class="rating-reviews">리뷰 120</span>
+                                <span class="rating-price">평균 15,000원</span>
                             </div>
                         </div>
                         <button class="bookmark-btn">☆</button>
@@ -437,15 +482,78 @@
                     
                     <div class="result-item">
                         <div class="result-image">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjBGMkZGIi8+Cjx0ZXh0IHg9IjQwIiB5PSI0NSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2QzdCOEEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuuylOyalOykgOuplDwvdGV4dD4KPHN2Zz4K" alt="건물">
+                            <div class="image-placeholder">이미지</div>
                             <span class="image-count">1/3</span>
                         </div>
                         <div class="result-info">
-                            <div class="result-title">율곡문화센터 북카페 식당 <span class="result-type">법령</span></div>
-                            <div class="result-address">경남 합천 율곡면 율곡달로문화센터 내 율곡 북카...</div>
+                            <div class="result-title">
+                                이탈리안 레스토랑
+                                <span class="result-category">양식</span>
+                            </div>
+                            <div class="result-address">정통 이탈리아 요리를 맛볼 수 있는 레스토랑</div>
                             <div class="result-rating">
-                                <span class="reviews">리뷰 2</span>
-                                <span class="price">평균 5,000원</span>
+                                <span class="rating-star">★</span>
+                                <span class="rating-value">4.2</span>
+                                <span class="rating-reviews">리뷰 89</span>
+                                <span class="rating-price">평균 35,000원</span>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn">☆</button>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-image">
+                            <div class="image-placeholder">이미지</div>
+                        </div>
+                        <div class="result-info">
+                            <div class="result-title">
+                                공원 산책로
+                                <span class="result-category">관광명소</span>
+                            </div>
+                            <div class="result-address">자연 속에서 여유로운 산책을 즐길 수 있습니다</div>
+                            <div class="result-rating">
+                                <span class="rating-star">★</span>
+                                <span class="rating-value">4.7</span>
+                                <span class="rating-reviews">리뷰 45</span>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn">☆</button>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-image">
+                            <div class="image-placeholder">이미지</div>
+                        </div>
+                        <div class="result-info">
+                            <div class="result-title">
+                                영화관
+                                <span class="result-category">문화시설</span>
+                            </div>
+                            <div class="result-address">최신 영화를 감상할 수 있는 멀티플렉스</div>
+                            <div class="result-rating">
+                                <span class="rating-star">★</span>
+                                <span class="rating-value">4.3</span>
+                                <span class="rating-reviews">리뷰 203</span>
+                                <span class="rating-price">평균 12,000원</span>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn">☆</button>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-image">
+                            <div class="image-placeholder">이미지</div>
+                        </div>
+                        <div class="result-info">
+                            <div class="result-title">
+                                쇼핑몰
+                                <span class="result-category">쇼핑</span>
+                            </div>
+                            <div class="result-address">다양한 브랜드와 맛집이 있는 복합 쇼핑몰</div>
+                            <div class="result-rating">
+                                <span class="rating-star">★</span>
+                                <span class="rating-value">4.1</span>
+                                <span class="rating-reviews">리뷰 156</span>
                             </div>
                         </div>
                         <button class="bookmark-btn">☆</button>
@@ -455,62 +563,49 @@
         </div>
 
         <div class="map-container">
-            <div class="placeholder-container">
-                <div style="
-                    height: 150px; 
-                    width: 100%;
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    background: #f0f2ff;
-                    color: #6c7b8a;
-                    font-size: 1rem;
-                    border-radius: 12px;
-                    margin: 20px;
-                ">
-                    <div style="text-align: center;">
-                        <div style="font-size: 2rem; margin-bottom: 10px;">🗺️</div>
-                        <p>검색 결과가 지도에 표시됩니다</p>
-                    </div>
-                </div>
+            <div class="map-placeholder">
+                <div class="map-icon">🗺️</div>
+                <p>지도가 여기에 표시됩니다</p>
             </div>
-            <div id="map"></div>
         </div>
     </div>
 
     <script>
-        // 검색 입력 이벤트 (추후 구현)
+        // 탭 전환 기능
+        const tabItems = document.querySelectorAll('.tab-item');
+        tabItems.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabItems.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        // 검색 입력 이벤트
         const searchInput = document.querySelector('.search-input');
         searchInput.addEventListener('input', function() {
-            // TODO: 검색 기능 구현
             console.log('검색:', this.value);
         });
 
-        function initMap() {
-            // TODO: 카카오맵 API 연동
-            const mapContainer = document.getElementById('map');
-            mapContainer.innerHTML = `
-                <div style="
-                    height: 100%; 
-                    width: 100%;
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    background: #f0f2ff;
-                    color: #6c7b8a;
-                    font-size: 1.2rem;
-                    position: relative;
-                ">
-                    <div style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 20px;">🗺️</div>
-                        <p>카카오맵이 여기에 표시됩니다</p>
-                    </div>
-                </div>
-            `;
-        }
+        // 북마크 버튼 클릭 이벤트
+        const bookmarkBtns = document.querySelectorAll('.bookmark-btn');
+        bookmarkBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.textContent = this.textContent === '☆' ? '★' : '☆';
+                this.style.color = this.textContent === '★' ? '#ffc107' : '#ddd';
+            });
+        });
 
-        // 페이지 로드 시 지도 초기화
-        document.addEventListener('DOMContentLoaded', initMap);
+        // 검색 결과 아이템 클릭 이벤트
+        const resultItems = document.querySelectorAll('.result-item');
+        resultItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // 기존 선택 해제
+                resultItems.forEach(i => i.style.background = '');
+                // 현재 아이템 선택
+                this.style.background = '#e8f4fd';
+            });
+        });
     </script>
 </body>
 </html>
