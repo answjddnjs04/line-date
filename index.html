@@ -697,10 +697,18 @@
             // 지도에 데이트 코스 표시
             if (!isLocalHost) {
                 setTimeout(async () => {
-                    if (typeof kakao !== 'undefined' && dateCourseMap) {
+                    if (typeof kakao !== 'undefined') {
+                        // 지도가 초기화되지 않았으면 먼저 초기화
+                        if (!dateCourseMap) {
+                            const initSuccess = await initializeDateMap();
+                            if (!initSuccess) {
+                                console.warn('지도 초기화 실패로 지도 표시를 건너뜁니다.');
+                                return;
+                            }
+                        }
                         await displayDateCourseOnMap(datesCourse.courses);
                     }
-                }, 500);
+                }, 1000); // 시간을 1초로 증가
             }
             
             // 결과로 스크롤
