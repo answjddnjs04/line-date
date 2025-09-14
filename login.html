@@ -329,11 +329,15 @@
                 const result = await window.supabaseClient.signIn(email, password);
                 
                 if (result.success) {
-                    showMessage('로그인 성공! 홈으로 이동합니다.', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
-                } else {
+    if (result.needsConfirmation) {
+        showMessage('회원가입이 완료되었습니다! 이메일을 확인해주세요.', 'success');
+    } else {
+        showMessage('회원가입이 완료되었습니다! 자동으로 로그인됩니다.', 'success');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
+    }
+} else {
                     showMessage(result.error || '로그인에 실패했습니다.');
                 }
             } catch (error) {
