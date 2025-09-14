@@ -328,15 +328,12 @@
             try {
                 const result = await window.supabaseClient.signIn(email, password);
                 
-                if (result.success) {
-    if (result.needsConfirmation) {
-        showMessage('회원가입이 완료되었습니다! 이메일을 확인해주세요.', 'success');
-    } else {
-        showMessage('회원가입이 완료되었습니다! 자동으로 로그인됩니다.', 'success');
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1500);
-    }
+                // 로그인 성공 부분 (수정)
+if (result.success) {
+    showMessage('로그인 성공! 데이트 플래너로 이동합니다.', 'success');
+    setTimeout(() => {
+        window.location.href = 'planner.html';
+    }, 1500);
 } else {
                     showMessage(result.error || '로그인에 실패했습니다.');
                 }
@@ -376,11 +373,11 @@
                 const result = await window.supabaseClient.signUp(email, password, userData);
                 
                 if (result.success) {
-                    showMessage('회원가입이 완료되었습니다! 자동으로 로그인됩니다.', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 2000);
-                } else {
+    showMessage('회원가입이 완료되었습니다! 데이트 플래너로 이동합니다.', 'success');
+    setTimeout(() => {
+        window.location.href = 'planner.html';
+    }, 2000);
+} else {
                     showMessage(result.error || '회원가입에 실패했습니다.');
                 }
             } catch (error) {
