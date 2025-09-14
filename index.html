@@ -30,6 +30,59 @@
             margin-bottom: 40px;
         }
 
+        .header-top {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            color: #34495e;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .auth-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .login-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-1px);
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        .auth-required.disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
         .logo {
             font-size: 2.5rem;
             font-weight: bold;
@@ -378,9 +431,16 @@
 <body>
     <div class="container">
         <header>
-            <h1 class="logo">💕 데이트 코스 플래너</h1>
-            <p class="subtitle">AI가 추천하는 완벽한 데이트 코스를 만들어보세요!</p>
-        </header>
+    <div class="header-top">
+        <div class="auth-section">
+            <div id="userInfo" class="user-info" style="display: none;"></div>
+            <button id="loginBtn" class="auth-btn login-btn" onclick="location.href='login.html'">로그인</button>
+            <button id="logoutBtn" class="auth-btn logout-btn" style="display: none;">로그아웃</button>
+        </div>
+    </div>
+    <h1 class="logo">💕 데이트 코스 플래너</h1>
+    <p class="subtitle">AI가 추천하는 완벽한 데이트 코스를 만들어보세요!</p>
+</header>
 
         <div class="form-container">
             <form id="dateForm">
@@ -425,9 +485,9 @@
                     </div>
                 </div>
                 
-                <button type="submit" class="generate-btn">
-                    ✨ 데이트 코스 생성하기
-                </button>
+                <button type="submit" class="generate-btn auth-required">
+    ✨ 데이트 코스 생성하기
+</button>
             </form>
         </div>
 
@@ -835,5 +895,34 @@ setTimeout(async () => {
     <script src="js/map.js"></script>
     <script src="js/location-filter.js"></script>
     <script src="js/duplicate-handler.js"></script>
+    <script type="module">
+        import './js/supabase.js';
+        
+        // 로그아웃 버튼 이벤트
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
+                    const result = await window.supabaseClient.signOut();
+                    if (result.success) {
+                        location.reload();
+                    }
+                });
+            }
+
+            // 인증이 필요한 기능에 대한 알림
+            const authRequiredElements = document.querySelectorAll('.auth-required');
+            authRequiredElements.forEach(element => {
+                element.addEventListener('click', (e) => {
+                    if (!window.supabaseClient?.isAuthenticated() && element.classList.contains('disabled')) {
+                        e.preventDefault();
+                        if (confirm('로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?')) {
+                            location.href = 'login.html';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
