@@ -33,6 +33,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            justify-content: flex-start;
         }
 
         .home-btn {
@@ -347,6 +348,8 @@
         #map {
             width: 100%;
             height: 100%;
+            position: relative;
+            z-index: 1;
         }
 
         @media (max-width: 768px) {
@@ -464,19 +467,20 @@
             console.log('검색:', this.value);
         });
 
-        // 카카오맵 초기화 (추후 구현)
         function initMap() {
             // TODO: 카카오맵 API 연동
             const mapContainer = document.getElementById('map');
             mapContainer.innerHTML = `
                 <div style="
                     height: 100%; 
+                    width: 100%;
                     display: flex; 
                     align-items: center; 
                     justify-content: center; 
                     background: #f0f2ff;
                     color: #6c7b8a;
                     font-size: 1.2rem;
+                    position: relative;
                 ">
                     <div style="text-align: center;">
                         <div style="font-size: 3rem; margin-bottom: 20px;">🗺️</div>
