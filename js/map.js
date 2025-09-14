@@ -196,19 +196,32 @@ class DateCourseMap {
     }
 
     // 지도 초기화
-    clearMap() {
+clearMap() {
+    try {
         // 기존 마커 제거
         this.markers.forEach(marker => {
-            marker.setMap(null);
+            if (marker && typeof marker.setMap === 'function') {
+                marker.setMap(null);
+            }
         });
         this.markers = [];
 
         // 기존 라인 제거
         this.polylines.forEach(polyline => {
-            polyline.setMap(null);
+            if (polyline && typeof polyline.setMap === 'function') {
+                polyline.setMap(null);
+            }
         });
         this.polylines = [];
+        
+        // 지도 객체 정리
+        if (this.map) {
+            this.map = null;
+        }
+    } catch (error) {
+        console.warn('지도 정리 중 오류 무시:', error);
     }
+}
 
     // 특정 코스로 지도 이동
     moveToMarker(courseIndex) {
