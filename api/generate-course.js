@@ -16,11 +16,22 @@ export default async function handler(req, res) {
   }
 
   const API_KEY = process.env.GEMINI_API_KEY;
-  const KAKAO_API_KEY = process.env.KAKAO_REST_API_KEY;
-  
-  if (!API_KEY || !KAKAO_API_KEY) {
-    return res.status(500).json({ message: 'API 키가 설정되지 않았습니다.' });
-  }
+const KAKAO_API_KEY = process.env.KAKAO_REST_API_KEY;
+
+// 디버그: API 키 확인
+console.log('🔐 API 키 상태:', {
+  gemini: API_KEY ? 'OK' : 'MISSING',
+  kakao: KAKAO_API_KEY ? 'OK' : 'MISSING',
+  kakaoLength: KAKAO_API_KEY ? KAKAO_API_KEY.length : 0
+});
+
+if (!API_KEY || !KAKAO_API_KEY) {
+  console.error('❌ API 키 누락:', { gemini: !!API_KEY, kakao: !!KAKAO_API_KEY });
+  return res.status(500).json({ 
+    message: 'API 키가 설정되지 않았습니다.',
+    debug: { gemini: !!API_KEY, kakao: !!KAKAO_API_KEY }
+  });
+}
 
   const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
 
@@ -67,18 +78,29 @@ export default async function handler(req, res) {
       console.log(`📍 API URL: ${searchUrl}`);
       
       const response = await fetch(searchUrl, {
-        headers: {
-          'Authorization': `KakaoAK ${KAKAO_API_KEY}`
-        }
-      });
+  headers: {
+    'Authorization': `KakaoAK ${KAKAO_API_KEY}`
+  }
+});
 
-      if (!response.ok) {
-        console.error('❌ Kakao API 호출 실패:', response.status);
-        return [];
-      }
+console.log(`🌐 카카오 API 응답 상태:`, response.status);
 
-      const data = await response.json();
-      console.log(`📊 검색 결과:`, data);
+if (!response.ok) {
+  const errorText = await response.text();
+  console.error('❌ Kakao API 호출 실패:', {
+    status: response.status,
+    statusText: response.statusText,
+    error: errorText
+  });
+  return [];
+}
+
+const data = await response.json();
+console.log(`📊 검색 결과:`, {
+  totalCount: data.meta?.total_count || 0,
+  resultCount: data.documents?.length || 0,
+  query: searchQuery
+});
       
       if (!data.documents || data.documents.length === 0) {
         console.log(`⚠️ "${searchQuery}" 검색 결과 없음`);
