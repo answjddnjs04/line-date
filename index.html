@@ -660,11 +660,23 @@
                 </div>
                 
                 <div class="course-list">
-                        ${datesCourse.courses.map((course, index) => `
+                        ${datesCourse.courses.map((course, index) => {
+                            // 중복 장소인지 확인
+                            const duplicateIndexes = [];
+                            datesCourse.courses.forEach((c, i) => {
+                                if (c.location === course.location) {
+                                    duplicateIndexes.push(i + 1);
+                                }
+                            });
+                            
+                            const isDuplicate = duplicateIndexes.length > 1;
+                            const courseNumbers = isDuplicate ? duplicateIndexes.join(',') : (index + 1);
+                            
+                            return `
                             <div class="course-item">
                                 <div class="course-time">${course.time}</div>
                                 <div class="course-title">
-                                    <span style="color: #667eea; font-weight: bold; margin-right: 8px;">${index + 1}.</span>
+                                    <span style="color: #667eea; font-weight: bold; margin-right: 8px;">${courseNumbers}.</span>
                                     ${course.title}
                                     ${course.realPlace ? '<span class="real-place-badge">실제 장소</span>' : ''}
                                 </div>
