@@ -45,32 +45,6 @@
             transform: scale(1.1);
         }
 
-        .nav-section {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .nav-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .nav-btn {
-            width: 40px;
-            height: 35px;
-            background: #f8f9ff;
-            border: 1px solid #e8ecf4;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .nav-btn:hover {
-            background: #f0f2ff;
-        }
-
         .search-container {
             flex: 1;
             max-width: 600px;
@@ -108,10 +82,46 @@
             height: calc(100vh - 80px);
         }
 
-        .search-panel {
+        .left-panel {
             width: 25%;
             background: white;
             border-right: 1px solid #e8ecf4;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-body {
+            display: flex;
+            flex: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            width: 60px;
+            border-right: 1px solid #e8ecf4;
+            background: #f8f9ff;
+        }
+
+        .nav-btn {
+            height: 60px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #e8ecf4;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .nav-btn:last-child {
+            border-bottom: none;
+        }
+
+        .nav-btn:hover {
+            background: #f0f2ff;
+        }
+
+        .search-content {
+            flex: 1;
             overflow-y: auto;
         }
 
@@ -339,23 +349,12 @@
             height: 100%;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #6c7b8a;
-        }
-
-        .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-
         @media (max-width: 768px) {
             .main-container {
                 flex-direction: column;
             }
             
-            .search-panel {
+            .left-panel {
                 width: 100%;
                 height: 40%;
             }
@@ -369,16 +368,7 @@
 <body>
     <div class="header">
         <div class="header-content">
-            <div class="nav-section">
-                <a href="home.html" class="home-btn">💕</a>
-                <div class="nav-buttons">
-                    <div class="nav-btn"></div>
-                    <div class="nav-btn"></div>
-                    <div class="nav-btn"></div>
-                    <div class="nav-btn"></div>
-                    <div class="nav-btn"></div>
-                </div>
-            </div>
+            <a href="home.html" class="home-btn">💕</a>
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="데이트 장소, 맛집, 카페 검색...">
                 <span class="search-icon">🔍</span>
@@ -387,65 +377,76 @@
     </div>
 
     <div class="main-container">
-        <div class="search-panel">
-            <div class="search-header">
-                <div class="location-info">
-                    <div class="location-badge">🎯 지도엠 업데이트 안내 - 대중교통 경유지 계단...</div>
+        <div class="left-panel">
+            <div class="panel-body">
+                <div class="nav-buttons">
+                    <div class="nav-btn"></div>
+                    <div class="nav-btn"></div>
+                    <div class="nav-btn"></div>
+                    <div class="nav-btn"></div>
+                    <div class="nav-btn"></div>
                 </div>
                 
-                <div class="region-title">
-                    <h2>경상북도</h2>
-                    <span class="update-info">오늘 시간</span>
-                </div>
-                
-                <div class="ad-banner">
-                    <div class="ad-content">
-                        <div class="ad-icon">🏢</div>
-                        <div class="ad-text">
-                            <div class="ad-title">쿠팡 비켓볼레이스 공식 입점 플래...</div>
-                            <div class="ad-subtitle">더 높은 매출 성장 기회</div>
-                        </div>
-                        <span class="ad-label">AD</span>
+                <div class="search-content">
+                <div class="search-header">
+                    <div class="location-info">
+                        <div class="location-badge">🎯 지도엠 업데이트 안내 - 대중교통 경유지 계단...</div>
                     </div>
-                </div>
-                
-                <div class="smart-around">
-                    <div class="smart-title">Smart Around</div>
-                </div>
-                
-                <div class="section-header">
-                    <h3>추천</h3>
-                    <button class="more-btn">저녁 시간대 추천순 ⌄</button>
-                </div>
-            </div>
-            
-            <div class="search-results">
-                <div class="result-item">
-                    <div class="result-info">
-                        <div class="result-title">영천수퍼동물 <span class="result-type">지원하점장</span></div>
-                        <div class="result-address">경상북도 합천군 율곡면 영전리 464-7</div>
-                        <div class="result-rating">
-                            <span class="star">★ 3.86</span>
-                            <span class="reviews">리뷰 29</span>
+                    
+                    <div class="region-title">
+                        <h2>경상북도</h2>
+                        <span class="update-info">오늘 시간</span>
+                    </div>
+                    
+                    <div class="ad-banner">
+                        <div class="ad-content">
+                            <div class="ad-icon">🏢</div>
+                            <div class="ad-text">
+                                <div class="ad-title">쿠팡 비켓볼레이스 공식 입점 플래...</div>
+                                <div class="ad-subtitle">더 높은 매출 성장 기회</div>
+                            </div>
+                            <span class="ad-label">AD</span>
                         </div>
                     </div>
-                    <button class="bookmark-btn">☆</button>
+                    
+                    <div class="smart-around">
+                        <div class="smart-title">Smart Around</div>
+                    </div>
+                    
+                    <div class="section-header">
+                        <h3>추천</h3>
+                        <button class="more-btn">저녁 시간대 추천순 ⌄</button>
+                    </div>
                 </div>
                 
-                <div class="result-item">
-                    <div class="result-image">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjBGMkZGIi8+Cjx0ZXh0IHg9IjQwIiB5PSI0NSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2QzdCOEEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuuylOyalOykgOuplDwvdGV4dD4KPHN2Zz4K" alt="건물" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;">
-                        <span class="image-count">1/3</span>
-                    </div>
-                    <div class="result-info">
-                        <div class="result-title">율곡문화센터 북카페 식당 <span class="result-type">법령</span></div>
-                        <div class="result-address">경남 합천 율곡면 율곡달로문화센터 내 율곡 북카...</div>
-                        <div class="result-rating">
-                            <span class="reviews">리뷰 2</span>
-                            <span class="price">평균 5,000원</span>
+                <div class="search-results">
+                    <div class="result-item">
+                        <div class="result-info">
+                            <div class="result-title">영천수퍼동물 <span class="result-type">지원하점장</span></div>
+                            <div class="result-address">경상북도 합천군 율곡면 영전리 464-7</div>
+                            <div class="result-rating">
+                                <span class="star">★ 3.86</span>
+                                <span class="reviews">리뷰 29</span>
+                            </div>
                         </div>
+                        <button class="bookmark-btn">☆</button>
                     </div>
-                    <button class="bookmark-btn">☆</button>
+                    
+                    <div class="result-item">
+                        <div class="result-image">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjBGMkZGIi8+Cjx0ZXh0IHg9IjQwIiB5PSI0NSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2QzdCOEEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuuylOyalOykgOuplDwvdGV4dD4KPHN2Zz4K" alt="건물">
+                            <span class="image-count">1/3</span>
+                        </div>
+                        <div class="result-info">
+                            <div class="result-title">율곡문화센터 북카페 식당 <span class="result-type">법령</span></div>
+                            <div class="result-address">경남 합천 율곡면 율곡달로문화센터 내 율곡 북카...</div>
+                            <div class="result-rating">
+                                <span class="reviews">리뷰 2</span>
+                                <span class="price">평균 5,000원</span>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn">☆</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -456,16 +457,6 @@
     </div>
 
     <script>
-        // 필터 태그 클릭 이벤트
-        document.querySelectorAll('.filter-tag').forEach(tag => {
-            tag.addEventListener('click', function() {
-                // 같은 그룹 내에서 active 클래스 토글
-                const group = this.closest('.filter-options');
-                group.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
         // 검색 입력 이벤트 (추후 구현)
         const searchInput = document.querySelector('.search-input');
         searchInput.addEventListener('input', function() {
