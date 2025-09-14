@@ -57,10 +57,14 @@ export default async function handler(req, res) {
       
       return 'FD6'; // 기본값: 음식점
     }
-
-    // 실제 장소 검색 함수
+    
+    // 실제 장소 검색 함수 (디버그 버전)
     async function searchRealPlaces(location, keyword, category = 'FD6') {
-      const searchUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(keyword + ' ' + location)}&category_group_code=${category}&size=3&sort=accuracy`;
+      const searchQuery = `${keyword} ${location}`;
+      const searchUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(searchQuery)}&category_group_code=${category}&size=3&sort=accuracy`;
+      
+      console.log(`🔍 검색 중: "${searchQuery}" (카테고리: ${category})`);
+      console.log(`📍 API URL: ${searchUrl}`);
       
       const response = await fetch(searchUrl, {
         headers: {
@@ -69,18 +73,28 @@ export default async function handler(req, res) {
       });
 
       if (!response.ok) {
-        console.error('Kakao API 호출 실패');
+        console.error('❌ Kakao API 호출 실패:', response.status);
         return [];
       }
 
       const data = await response.json();
-      return data.documents.map(place => ({
+      console.log(`📊 검색 결과:`, data);
+      
+      if (!data.documents || data.documents.length === 0) {
+        console.log(`⚠️ "${searchQuery}" 검색 결과 없음`);
+        return [];
+      }
+      
+      const places = data.documents.map(place => ({
         name: place.place_name,
         category: place.category_name,
         address: place.road_address_name || place.address_name,
         phone: place.phone,
         url: place.place_url
       }));
+      
+      console.log(`✅ 찾은 장소들:`, places);
+      return places;
     }
     
     // 프롬프트 생성
