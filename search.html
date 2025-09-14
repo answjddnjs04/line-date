@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검색 - 데이트 코스 플래너</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9ff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .home-btn {
+            font-size: 2rem;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .home-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #e8ecf4;
+            border-radius: 25px;
+            outline: none;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c7b8a;
+            font-size: 1.2rem;
+        }
+
+        .main-container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+
+        .search-panel {
+            width: 25%;
+            background: white;
+            border-right: 1px solid #e8ecf4;
+            overflow-y: auto;
+        }
+
+        .search-content {
+            padding: 20px;
+        }
+
+        .search-filters {
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-tag {
+            padding: 6px 12px;
+            background: #f8f9ff;
+            border: 1px solid #e8ecf4;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #34495e;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tag:hover, .filter-tag.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .search-results {
+            padding-top: 20px;
+        }
+
+        .result-item {
+            padding: 15px;
+            border-bottom: 1px solid #f0f2ff;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .result-item:hover {
+            background: #f8f9ff;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .result-address {
+            color: #6c7b8a;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .result-category {
+            color: #667eea;
+            font-size: 0.8rem;
+        }
+
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c7b8a;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .search-panel {
+                width: 100%;
+                height: 40%;
+            }
+            
+            .map-container {
+                height: 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="home.html" class="home-btn">💕</a>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="데이트 장소, 맛집, 카페 검색...">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="search-panel">
+            <div class="search-content">
+                <div class="search-filters">
+                    <div class="filter-group">
+                        <div class="filter-title">카테고리</div>
+                        <div class="filter-options">
+                            <div class="filter-tag active">전체</div>
+                            <div class="filter-tag">음식점</div>
+                            <div class="filter-tag">카페</div>
+                            <div class="filter-tag">관광명소</div>
+                            <div class="filter-tag">문화시설</div>
+                            <div class="filter-tag">쇼핑</div>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <div class="filter-title">거리</div>
+                        <div class="filter-options">
+                            <div class="filter-tag active">전체</div>
+                            <div class="filter-tag">1km 이내</div>
+                            <div class="filter-tag">5km 이내</div>
+                            <div class="filter-tag">10km 이내</div>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <div class="filter-title">가격대</div>
+                        <div class="filter-options">
+                            <div class="filter-tag active">전체</div>
+                            <div class="filter-tag">저렴</div>
+                            <div class="filter-tag">보통</div>
+                            <div class="filter-tag">비싼</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="search-results">
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <p>검색어를 입력하면<br>데이트 장소를 찾아드려요!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script>
+        // 필터 태그 클릭 이벤트
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                // 같은 그룹 내에서 active 클래스 토글
+                const group = this.closest('.filter-options');
+                group.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 검색 입력 이벤트 (추후 구현)
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', function() {
+            // TODO: 검색 기능 구현
+            console.log('검색:', this.value);
+        });
+
+        // 카카오맵 초기화 (추후 구현)
+        function initMap() {
+            // TODO: 카카오맵 API 연동
+            const mapContainer = document.getElementById('map');
+            mapContainer.innerHTML = `
+                <div style="
+                    height: 100%; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    background: #f0f2ff;
+                    color: #6c7b8a;
+                    font-size: 1.2rem;
+                ">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🗺️</div>
+                        <p>카카오맵이 여기에 표시됩니다</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 페이지 로드 시 지도 초기화
+        document.addEventListener('DOMContentLoaded', initMap);
+    </script>
+</body>
+</html>
