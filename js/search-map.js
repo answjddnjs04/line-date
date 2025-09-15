@@ -36,7 +36,8 @@ class SearchMap {
     scrollwheel: true,
     disableDoubleClick: false,
     disableDoubleClickZoom: false,
-    keyboardShortcuts: true
+    keyboardShortcuts: true,
+    tileAnimation: true
 };
 
 try {
@@ -46,6 +47,22 @@ try {
     // 지도 컨트롤 최적화
     this.map.setDraggable(true);
     this.map.setZoomable(true);
+    
+    // 타일 로딩 최적화 이벤트
+    kakao.maps.event.addListener(this.map, 'zoom_start', () => {
+        container.style.overflow = 'hidden';
+    });
+    
+    kakao.maps.event.addListener(this.map, 'zoom_changed', () => {
+        setTimeout(() => {
+            this.map.relayout();
+            container.style.overflow = 'visible';
+        }, 100);
+    });
+    
+    kakao.maps.event.addListener(this.map, 'tilesloaded', () => {
+        container.style.overflow = 'visible';
+    });
     
     console.log('✅ 검색 지도 초기화 완료');
     
