@@ -341,6 +341,28 @@
     padding: 20px;
     color: #667eea;
 }
+        .full-screen-map {
+    width: 100%;
+    height: 100vh;
+    border: none;
+}
+
+.search-interface {
+    /* 이 부분은 삭제해도 됩니다 */
+}
+
+.search-title,
+.search-subtitle,
+.search-input-container,
+.search-input,
+.search-btn,
+.quick-search,
+.quick-tag,
+.map-container,
+.search-map,
+.search-results {
+    /* 이 부분들도 삭제해도 됩니다 */
+}
 </style>
 </head>
 <body>
@@ -429,30 +451,6 @@
         <div class="toggle-btn" onclick="toggleSidebar()">></div>
     </div>
     <div class="right-box">
-    <div class="search-interface">
-        <h1 class="search-title">💕 장소 검색</h1>
-        <p class="search-subtitle">완벽한 데이트 장소를 찾아보세요</p>
-        
-        <div class="search-input-container">
-            <input type="text" id="mainSearch" class="search-input" placeholder="카페, 맛집, 관광지 등을 검색해보세요...">
-            <button class="search-btn" onclick="searchPlaces()">🔍</button>
-        </div>
-        
-        <div class="quick-search">
-            <div class="quick-tag" onclick="quickSearch('홍대 카페')">홍대 카페</div>
-            <div class="quick-tag" onclick="quickSearch('강남 맛집')">강남 맛집</div>
-            <div class="quick-tag" onclick="quickSearch('명동 쇼핑')">명동 쇼핑</div>
-            <div class="quick-tag" onclick="quickSearch('한강 공원')">한강 공원</div>
-            <div class="quick-tag" onclick="quickSearch('이태원 바')">이태원 바</div>
-        </div>
-        
-        <!-- 지도 컨테이너 추가 -->
-        <div id="mapContainer" class="map-container" style="display: none;">
-            <div id="searchMap" class="search-map"></div>
-            <div id="searchResults" class="search-results"></div>
-        </div>
-    </div>
-</div>
 </div>
 <script>
 function toggleSidebar() {
