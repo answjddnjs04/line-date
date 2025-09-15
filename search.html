@@ -143,7 +143,15 @@
 <script>
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.toggle-btn');
+    
     sidebar.classList.toggle('active');
+    
+    if (sidebar.classList.contains('active')) {
+        toggleBtn.textContent = '<';
+    } else {
+        toggleBtn.textContent = '>';
+    }
 }
 </script>
 </body>
