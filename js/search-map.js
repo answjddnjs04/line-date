@@ -15,10 +15,19 @@ class SearchMap {
         }
 
         kakao.maps.load(() => {
+            // DOM 요소 존재 확인
             const container = document.getElementById('searchMap');
+            console.log('🔍 지도 컨테이너 확인:', container);
+            
             if (!container) {
+                console.error('❌ searchMap 엘리먼트를 찾을 수 없습니다');
                 reject(new Error('지도 컨테이너를 찾을 수 없습니다.'));
                 return;
+            }
+
+            // 컨테이너 크기 확인
+            if (container.offsetWidth === 0 || container.offsetHeight === 0) {
+                console.warn('⚠️ 지도 컨테이너 크기가 0입니다');
             }
 
             const options = {
@@ -31,13 +40,14 @@ class SearchMap {
                 this.ps = new kakao.maps.services.Places();
                 console.log('✅ 검색 지도 초기화 완료');
                 
-                // 지도 초기화 후 자동으로 지도 표시
+                // 지도 크기 재조정
                 setTimeout(() => {
                     this.map.relayout();
-                }, 100);
+                }, 200);
                 
                 resolve();
             } catch (error) {
+                console.error('❌ 지도 생성 중 오류:', error);
                 reject(new Error(`지도 생성 실패: ${error.message}`));
             }
         });
