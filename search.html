@@ -216,60 +216,119 @@
             left: 63px;
         }
 
-        function sendMessage() {
-    const input = document.getElementById('chatInput');
-    const message = input.value.trim();
-    
-    if (!message) return;
-    
-    // 사용자 메시지 추가
-    addMessage(message, 'user');
-    input.value = '';
-    
-    // AI 응답 시뮬레이션
-    setTimeout(() => {
-        const responses = [
-            "좋은 선택이에요! 해당 지역의 인기 장소들을 찾아볼게요.",
-            "그 지역에 멋진 카페들이 많아요. 지도에서 확인해보세요!",
-            "로맨틱한 분위기의 장소들을 추천해드릴게요.",
-            "예산에 맞는 완벽한 데이트 코스를 만들어드릴게요!"
-        ];
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        addMessage(randomResponse, 'ai');
-    }, 1000);
+        .chat-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: white;
 }
 
-function addMessage(text, sender) {
-    const messagesContainer = document.getElementById('chatMessages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${sender}-message`;
-    
-    const now = new Date();
-    const timeString = now.toLocaleTimeString('ko-KR', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
-    
-    messageDiv.innerHTML = `
-        <div class="message-content">${text}</div>
-        <div class="message-time">${timeString}</div>
-    `;
-    
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+.chat-header {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #e8ecf4;
 }
 
-// 엔터키로 메시지 전송
-document.addEventListener('DOMContentLoaded', () => {
-    const chatInput = document.getElementById('chatInput');
-    if (chatInput) {
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    }
-});
+.chat-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.chat-status {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f8f9ff;
+}
+
+.message {
+    margin-bottom: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+.ai-message .message-content {
+    background: white;
+    color: #2c3e50;
+    padding: 12px 16px;
+    border-radius: 18px 18px 18px 4px;
+    max-width: 80%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.user-message .message-content {
+    background: #667eea;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 18px 18px 4px 18px;
+    max-width: 80%;
+    margin-left: auto;
+    text-align: right;
+}
+
+.message-time {
+    font-size: 0.8rem;
+    color: #6c7b8a;
+    margin-top: 5px;
+    text-align: right;
+}
+
+.user-message .message-time {
+    text-align: left;
+}
+
+.chat-input-container {
+    display: flex;
+    padding: 15px;
+    background: white;
+    border-top: 1px solid #e8ecf4;
+    gap: 10px;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e8ecf4;
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.chat-input:focus {
+    border-color: #667eea;
+}
+
+.send-button {
+    width: 45px;
+    height: 45px;
+    background: #667eea;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.send-button:hover {
+    background: #5a6fd8;
+    transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
         .map-container {
     margin-top: 30px;
     width: 100%;
@@ -438,7 +497,60 @@ function toggleSidebar() {
 document.addEventListener('DOMContentLoaded', function() {
     const toggleBtn = document.querySelector('.toggle-btn');
     toggleBtn.textContent = '<';
+    
+    // 엔터키로 메시지 전송
+    const chatInput = document.getElementById('chatInput');
+    if (chatInput) {
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    }
 });
+
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // 사용자 메시지 추가
+    addMessage(message, 'user');
+    input.value = '';
+    
+    // AI 응답 시뮬레이션
+    setTimeout(() => {
+        const responses = [
+            "좋은 선택이에요! 해당 지역의 인기 장소들을 찾아볼게요.",
+            "그 지역에 멋진 카페들이 많아요. 지도에서 확인해보세요!",
+            "로맨틱한 분위기의 장소들을 추천해드릴게요.",
+            "예산에 맞는 완벽한 데이트 코스를 만들어드릴게요!"
+        ];
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        addMessage(randomResponse, 'ai');
+    }, 1000);
+}
+
+function addMessage(text, sender) {
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message`;
+    
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('ko-KR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+    
+    messageDiv.innerHTML = `
+        <div class="message-content">${text}</div>
+        <div class="message-time">${timeString}</div>
+    `;
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
 
 // 카카오맵 스크립트 동적 로드
 async function loadKakaoMapScript() {
