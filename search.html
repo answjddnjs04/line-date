@@ -64,10 +64,11 @@
     font-size: 16px;
     color: #666;
     position: absolute;
-    left: 453px;
+    left: 63px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 15;
+    transition: left 0.3s ease;
 }
 
 .toggle-btn:hover {
@@ -75,7 +76,7 @@
 }
         .sidebar {
     width: 390px;
-    height: 949px;
+    height: calc(100vh - 75px);
     background-color: white;
     border: 1px solid #ddd;
     position: absolute;
@@ -84,6 +85,14 @@
     transition: left 0.3s ease;
     z-index: 5;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar.active {
+    left: 63px;
+}
+
+.sidebar.active + .toggle-btn {
+    left: 453px;
 }
 
 .sidebar.active {
