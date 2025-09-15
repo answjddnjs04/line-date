@@ -73,6 +73,28 @@
 .toggle-btn:hover {
     background-color: #e0e0e0;
 }
+        .sidebar {
+    width: 390px;
+    height: 949px;
+    background-color: white;
+    border: 1px solid #ddd;
+    position: absolute;
+    left: -390px;
+    top: 0;
+    transition: left 0.3s ease;
+    z-index: 5;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar.active {
+    left: 63px;
+}
+
+.sidebar-content {
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
     </style>
 </head>
 <body>
@@ -83,8 +105,19 @@
         </div>
         <div class="left-box"></div>
     </div>
-    <div class="toggle-btn">></div>
-    <div class="right-box"></div>
+    <div class="toggle-btn" onclick="toggleSidebar()">></div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-content">
+        <!-- 사이드바 내용 -->
+    </div>
 </div>
+<div class="right-box"></div>
+</div>
+<script>
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('active');
+}
+</script>
 </body>
 </html>
