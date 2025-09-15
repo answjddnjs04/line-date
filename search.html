@@ -623,34 +623,41 @@ function addMessage(text, sender) {
     
     // 개수에 따른 크기와 마진 계산
     let boxSize, fontSize, numberSize, itemMargin, boxPadding, arrowSize;
-    if (count <= 3) {
-        boxSize = 60;
-        fontSize = '0.8rem';
-        numberSize = 20;
-        itemMargin = '0 4px';
-        boxPadding = '4px';
-        arrowSize = '16px';
-    } else if (count <= 4) {
+    if (count <= 2) {
         boxSize = 50;
         fontSize = '0.75rem';
         numberSize = 18;
-        itemMargin = '0 3px';
+        itemMargin = '0 6px';
         boxPadding = '3px';
         arrowSize = '14px';
-    } else if (count <= 5) {
+    } else if (count <= 3) {
         boxSize = 45;
         fontSize = '0.7rem';
         numberSize = 16;
-        itemMargin = '0 2px';
+        itemMargin = '0 4px';
         boxPadding = '3px';
         arrowSize = '12px';
-    } else {
-        boxSize = 40;
+    } else if (count <= 4) {
+        boxSize = 38;
         fontSize = '0.65rem';
-        numberSize = 15;
+        numberSize = 14;
+        itemMargin = '0 3px';
+        boxPadding = '2px';
+        arrowSize = '11px';
+    } else if (count <= 5) {
+        boxSize = 34;
+        fontSize = '0.6rem';
+        numberSize = 13;
         itemMargin = '0 2px';
         boxPadding = '2px';
         arrowSize = '10px';
+    } else {
+        boxSize = 30;
+        fontSize = '0.55rem';
+        numberSize = 12;
+        itemMargin = '0 1px';
+        boxPadding = '2px';
+        arrowSize = '9px';
     }
     
     courseList.className = 'course-list';
