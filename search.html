@@ -16,9 +16,10 @@
         }
 
         .container {
-            display: flex;
-            height: 100vh;
-        }
+    display: flex;
+    height: 100vh;
+    position: relative;
+}
 
         .left-container {
             display: flex;
@@ -54,15 +55,18 @@
         .toggle-btn {
     width: 23px;
     height: 46px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
+    background-color: rgba(240, 240, 240, 0.8);
+    border: 1px solid rgba(204, 204, 204, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     font-size: 16px;
     color: #666;
-    position: relative;
+    position: absolute;
+    left: 63px;
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 10;
 }
 
