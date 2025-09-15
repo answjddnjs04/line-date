@@ -223,23 +223,78 @@
     background: white;
 }
 
-.chat-header {
+.course-display {
     background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
-    padding: 20px;
-    text-align: center;
+    padding: 15px;
     border-bottom: 1px solid #e8ecf4;
+    min-height: 120px;
 }
 
-.chat-title {
+.course-header {
     font-size: 1.1rem;
     font-weight: bold;
-    margin-bottom: 5px;
+    text-align: center;
+    margin-bottom: 15px;
 }
 
-.chat-status {
-    font-size: 0.9rem;
-    opacity: 0.8;
+.course-list {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 5px 0;
+}
+
+.course-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.course-box {
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.course-number {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 20px;
+    height: 20px;
+    background: #667eea;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    border: 2px solid white;
+}
+
+.course-name {
+    color: white;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.course-arrow {
+    color: white;
+    font-size: 1.2rem;
+    opacity: 0.7;
 }
 
 .chat-messages {
@@ -453,10 +508,12 @@
 </div>
     <div class="sidebar active" id="sidebar">
         <div class="chat-container">
-    <div class="chat-header">
-        <div class="chat-title">💕 AI 데이트 어시스턴트</div>
-        <div class="chat-status">온라인</div>
+    <div class="course-display" id="courseDisplay">
+    <div class="course-header">💕 데이트 코스</div>
+    <div class="course-list" id="courseList">
+        <!-- 코스들이 여기에 동적으로 추가됩니다 -->
     </div>
+</div>
     
     <div class="chat-messages" id="chatMessages">
         <div class="message ai-message">
@@ -520,16 +577,24 @@ function sendMessage() {
     input.value = '';
     
     // AI 응답 시뮬레이션
+    // 숫자 입력 체크 및 코스 표시
+const number = parseInt(message);
+if (number >= 1 && number <= 6) {
+    displayCourses(number);
+    addMessage(`${number}개의 데이트 코스를 표시했습니다!`, 'ai');
+} else {
+    // AI 응답 시뮬레이션
     setTimeout(() => {
         const responses = [
+            "1~6 사이의 숫자를 입력하면 해당 개수만큼 데이트 코스를 보여드릴게요!",
             "좋은 선택이에요! 해당 지역의 인기 장소들을 찾아볼게요.",
             "그 지역에 멋진 카페들이 많아요. 지도에서 확인해보세요!",
-            "로맨틱한 분위기의 장소들을 추천해드릴게요.",
-            "예산에 맞는 완벽한 데이트 코스를 만들어드릴게요!"
+            "로맨틱한 분위기의 장소들을 추천해드릴게요."
         ];
         const randomResponse = responses[Math.floor(Math.random() * responses.length)];
         addMessage(randomResponse, 'ai');
     }, 1000);
+}
 }
 
 function addMessage(text, sender) {
@@ -550,6 +615,53 @@ function addMessage(text, sender) {
     
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+    function displayCourses(count) {
+    const courseList = document.getElementById('courseList');
+    courseList.innerHTML = '';
+    
+    const courseNames = ['정원 카페', '이탈리안 레스토랑', '영화관', '공원 산책', '디저트 카페', '야경 명소'];
+    
+    for (let i = 0; i < count; i++) {
+        // 코스 아이템 컨테이너
+        const courseItem = document.createElement('div');
+        courseItem.className = 'course-item';
+        
+        // 코스 박스와 이름을 감싸는 컨테이너
+        const courseContainer = document.createElement('div');
+        courseContainer.style.display = 'flex';
+        courseContainer.style.flexDirection = 'column';
+        courseContainer.style.alignItems = 'center';
+        
+        // 코스 박스
+        const courseBox = document.createElement('div');
+        courseBox.className = 'course-box';
+        
+        // 코스 번호
+        const courseNumber = document.createElement('div');
+        courseNumber.className = 'course-number';
+        courseNumber.textContent = i + 1;
+        
+        // 코스 이름
+        const courseName = document.createElement('div');
+        courseName.className = 'course-name';
+        courseName.textContent = courseNames[i] || `코스 ${i + 1}`;
+        
+        courseBox.appendChild(courseNumber);
+        courseContainer.appendChild(courseBox);
+        courseContainer.appendChild(courseName);
+        courseItem.appendChild(courseContainer);
+        
+        // 화살표 추가 (마지막 코스가 아닐 때)
+        if (i < count - 1) {
+            const arrow = document.createElement('div');
+            arrow.className = 'course-arrow';
+            arrow.textContent = '▶';
+            courseItem.appendChild(arrow);
+        }
+        
+        courseList.appendChild(courseItem);
+    }
 }
 
 // 카카오맵 스크립트 동적 로드
