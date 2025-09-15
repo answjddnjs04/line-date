@@ -521,6 +521,23 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.error('❌ 카카오맵 초기화 실패:', error);
     }
 });
+    // DOMContentLoaded 후 카카오맵 준비 및 초기화
+document.addEventListener('DOMContentLoaded', async function() {
+    // 디버깅: DOM 요소 확인
+    console.log('🔍 전체 DOM 확인:', document.body.innerHTML.includes('searchMap'));
+    console.log('🔍 searchMap 요소:', document.getElementById('searchMap'));
+    
+    try {
+        await loadKakaoMapScript();
+        // DOM이 완전히 로드된 후 잠시 대기
+        setTimeout(async () => {
+            await initSearchMap();
+            console.log('✅ 카카오맵 준비 완료');
+        }, 100);
+    } catch (error) {
+        console.error('❌ 카카오맵 초기화 실패:', error);
+    }
+});
 </script>
 <script src="js/search-map.js"></script>
 </body>
