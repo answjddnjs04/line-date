@@ -232,20 +232,12 @@
 }
 
 .course-list {
-    display: grid;
-    gap: 15px;
-    justify-items: center;
+    display: flex;
+    justify-content: center;
     align-items: center;
-}
-
-.course-list.single-row {
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    max-width: 100%;
-}
-
-.course-list.two-rows {
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
+    flex-wrap: nowrap;
+    overflow: visible;
 }
 
 .course-item {
@@ -253,27 +245,30 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
-.chat-messages {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    background: #f8f9ff;
-}
-
-.message {
-    margin-bottom: 15px;
-    animation: fadeIn 0.3s ease;
-}
-
-.ai-message .message-content {
+.course-box {
     background: white;
-    color: #2c3e50;
-    padding: 12px 16px;
-    border-radius: 18px 18px 18px 4px;
-    max-width: 80%;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+
+.course-name {
+    color: white;
+    text-align: center;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .user-message .message-content {
@@ -577,12 +572,27 @@ function addMessage(text, sender) {
     const courseList = document.getElementById('courseList');
     courseList.innerHTML = '';
     
-    // 레이아웃 클래스 설정
-    if (count <= 5) {
-        courseList.className = 'course-list single-row';
+    // 개수에 따른 크기 계산
+    let boxSize, fontSize, numberSize;
+    if (count <= 3) {
+        boxSize = 60;
+        fontSize = '0.8rem';
+        numberSize = 20;
+    } else if (count <= 4) {
+        boxSize = 50;
+        fontSize = '0.75rem';
+        numberSize = 18;
+    } else if (count <= 5) {
+        boxSize = 45;
+        fontSize = '0.7rem';
+        numberSize = 16;
     } else {
-        courseList.className = 'course-list two-rows';
+        boxSize = 40;
+        fontSize = '0.65rem';
+        numberSize = 15;
     }
+    
+    courseList.className = 'course-list';
     
     const courseNames = ['정원 카페', '이탈리안 레스토랑', '영화관', '공원 산책', '디저트 카페', '야경 명소'];
     
@@ -594,16 +604,25 @@ function addMessage(text, sender) {
         // 코스 박스
         const courseBox = document.createElement('div');
         courseBox.className = 'course-box';
+        courseBox.style.width = `${boxSize}px`;
+        courseBox.style.height = `${boxSize}px`;
         
         // 코스 번호
         const courseNumber = document.createElement('div');
         courseNumber.className = 'course-number';
         courseNumber.textContent = i + 1;
+        courseNumber.style.width = `${numberSize}px`;
+        courseNumber.style.height = `${numberSize}px`;
+        courseNumber.style.fontSize = `${numberSize * 0.6}px`;
+        courseNumber.style.top = `-${numberSize/2}px`;
+        courseNumber.style.left = `-${numberSize/2}px`;
         
         // 코스 이름
         const courseName = document.createElement('div');
         courseName.className = 'course-name';
         courseName.textContent = courseNames[i] || `코스 ${i + 1}`;
+        courseName.style.fontSize = fontSize;
+        courseName.style.maxWidth = `${boxSize + 20}px`;
         
         courseBox.appendChild(courseNumber);
         courseItem.appendChild(courseBox);
