@@ -289,18 +289,18 @@
     position: absolute;
     top: 0;
     left: 0;
-    background: #ff0000;
-    color: white;
+    background: white;
+    color: #333;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     font-size: 12px;
-    z-index: 10;
+    z-index: 20;
     transform: translate(-50%, -50%);
     border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .course-name {
@@ -615,27 +615,31 @@ function addMessage(text, sender) {
     courseList.innerHTML = '';
     
     // 개수에 따른 크기와 마진 계산
-    let boxSize, fontSize, numberSize, itemMargin;
+    let boxSize, fontSize, numberSize, itemMargin, boxMargin;
     if (count <= 3) {
         boxSize = 60;
         fontSize = '0.8rem';
         numberSize = 20;
         itemMargin = '0 8px';
+        boxMargin = '10px';
     } else if (count <= 4) {
         boxSize = 50;
         fontSize = '0.75rem';
         numberSize = 18;
         itemMargin = '0 6px';
+        boxMargin = '8px';
     } else if (count <= 5) {
         boxSize = 45;
         fontSize = '0.7rem';
         numberSize = 16;
         itemMargin = '0 4px';
+        boxMargin = '6px';
     } else {
         boxSize = 40;
         fontSize = '0.65rem';
         numberSize = 15;
         itemMargin = '0 3px';
+        boxMargin = '4px';
     }
     
     courseList.className = 'course-list';
@@ -654,6 +658,8 @@ function addMessage(text, sender) {
         courseBox.className = 'course-box';
         courseBox.style.width = `${boxSize}px`;
         courseBox.style.height = `${boxSize}px`;
+        courseBox.style.backgroundColor = colors[i];
+        courseBox.style.margin = boxMargin;
         
         // 코스 번호
         const courseNumber = document.createElement('div');
@@ -662,7 +668,6 @@ function addMessage(text, sender) {
         courseNumber.style.width = `${numberSize}px`;
         courseNumber.style.height = `${numberSize}px`;
         courseNumber.style.fontSize = `${numberSize * 0.6}px`;
-        courseNumber.style.backgroundColor = colors[i];
         
         // 코스 이름
         const courseName = document.createElement('div');
