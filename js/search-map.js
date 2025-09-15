@@ -8,35 +8,41 @@ class SearchMap {
     }
 
     async init() {
-        return new Promise((resolve, reject) => {
-            if (typeof kakao === 'undefined') {
-                reject(new Error('카카오맵 API가 로드되지 않았습니다.'));
+    return new Promise((resolve, reject) => {
+        if (typeof kakao === 'undefined') {
+            reject(new Error('카카오맵 API가 로드되지 않았습니다.'));
+            return;
+        }
+
+        kakao.maps.load(() => {
+            const container = document.getElementById('searchMap');
+            if (!container) {
+                reject(new Error('지도 컨테이너를 찾을 수 없습니다.'));
                 return;
             }
 
-            kakao.maps.load(() => {
-                const container = document.getElementById('searchMap');
-                if (!container) {
-                    reject(new Error('지도 컨테이너를 찾을 수 없습니다.'));
-                    return;
-                }
+            const options = {
+                center: new kakao.maps.LatLng(37.5665, 126.9780),
+                level: 7
+            };
 
-                const options = {
-                    center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심
-                    level: 3
-                };
-
-                try {
-                    this.map = new kakao.maps.Map(container, options);
-                    this.ps = new kakao.maps.services.Places();
-                    console.log('✅ 검색 지도 초기화 완료');
-                    resolve();
-                } catch (error) {
-                    reject(new Error(`지도 생성 실패: ${error.message}`));
-                }
-            });
+            try {
+                this.map = new kakao.maps.Map(container, options);
+                this.ps = new kakao.maps.services.Places();
+                console.log('✅ 검색 지도 초기화 완료');
+                
+                // 지도 초기화 후 자동으로 지도 표시
+                setTimeout(() => {
+                    this.map.relayout();
+                }, 100);
+                
+                resolve();
+            } catch (error) {
+                reject(new Error(`지도 생성 실패: ${error.message}`));
+            }
         });
-    }
+    });
+}
 
     searchPlaces(keyword, category = '') {
         if (!this.ps) {
