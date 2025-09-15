@@ -13,116 +13,255 @@
 
         body {
             overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9ff;
         }
 
         .container {
-    display: flex;
-    height: 100vh;
-    position: relative;
-}
+            display: flex;
+            height: 100vh;
+            position: relative;
+        }
 
         .left-container {
             display: flex;
             flex-direction: column;
             width: 63px;
             height: 100vh;
+            position: relative;
+            z-index: 10;
         }
 
         .logo-box {
-    height: 75px;
-    background-color: blue;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+            height: 75px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
 
-.logo-icon {
-    font-size: 30px;
-    line-height: 1;
-    cursor: pointer;
-}
+        .logo-icon {
+            font-size: 30px;
+            line-height: 1;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .logo-icon:hover {
+            transform: scale(1.1);
+        }
 
         .left-box {
             flex: 1;
-            background-color: yellow;
+            background: white;
+            border-right: 1px solid #e8ecf4;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
         }
 
         .right-box {
             flex: 1;
             height: 100vh;
-            background-color: green;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            position: relative;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        .search-interface {
+            text-align: center;
+            max-width: 600px;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e8ecf4;
+        }
+
+        .search-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .search-subtitle {
+            color: #6c7b8a;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .search-input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e8ecf4;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .quick-search {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .quick-tag {
+            background: #f8f9ff;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #e8ecf4;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .quick-tag:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+
         .toggle-btn {
-    width: 23px;
-    height: 46px;
-    background-color: rgba(240, 240, 240, 0.8);
-    border: 1px solid rgba(204, 204, 204, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 16px;
-    color: #666;
-    position: absolute;
-    right: -23px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 15;
-}
+            width: 23px;
+            height: 46px;
+            background: white;
+            border: 1px solid #e8ecf4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: #667eea;
+            position: absolute;
+            right: -23px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 15;
+            border-radius: 0 8px 8px 0;
+            transition: all 0.3s ease;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
 
-.toggle-btn:hover {
-    background-color: #e0e0e0;
-}
+        .toggle-btn:hover {
+            background: #f8f9ff;
+            color: #5a6fd8;
+        }
 
-.sidebar.active ~ .toggle-btn {
-    left: 453px;
-}
+        .sidebar.active ~ .toggle-btn {
+            left: 453px;
+        }
+
         .sidebar {
-    width: 390px;
-    height: 100vh;
-    background-color: white;
-    border: 1px solid #ddd;
-    position: absolute;
-    left: -327px;
-    top: 0;
-    transition: left 0.3s ease;
-    z-index: 7;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-}
+            width: 390px;
+            height: 100vh;
+            background: white;
+            border-right: 1px solid #e8ecf4;
+            position: absolute;
+            left: -327px;
+            top: 0;
+            transition: left 0.3s ease;
+            z-index: 7;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
 
-.sidebar.active {
-    left: 63px;
-}
+        .sidebar.active {
+            left: 63px;
+        }
 
+        .sidebar-content {
+            padding: 20px;
+            height: 100%;
+            overflow-y: auto;
+        }
 
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e8ecf4;
+        }
 
-.sidebar.active {
-    left: 63px;
-}
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
 
-.sidebar-content {
-    padding: 20px;
-    height: 100%;
-    overflow-y: auto;
-}
-        .left-container {
-    display: flex;
-    flex-direction: column;
-    width: 63px;
-    height: 100vh;
-    position: relative;
-    z-index: 10;
-}
+        .filter-section {
+            margin-bottom: 25px;
+        }
 
-.right-box {
-    flex: 1;
-    height: 100vh;
-    background-color: green;
-    position: relative;
-    z-index: 5;
-}
-        
-    </style>
+        .filter-title {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+            cursor: pointer;
+        }
+
+        .filter-option:hover {
+            background: #f8f9ff;
+        }
+
+        .filter-checkbox {
+            accent-color: #667eea;
+        }
+</style>
 </head>
 <body>
     <div class="container">
@@ -133,12 +272,98 @@
         <div class="left-box"></div>
     </div>
     <div class="sidebar" id="sidebar">
-    <div class="sidebar-content">
-        <!-- 사이드바 내용 -->
+        <div class="sidebar-content">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">🔍 검색 필터</h2>
+            </div>
+            
+            <div class="filter-section">
+                <h3 class="filter-title">카테고리</h3>
+                <div class="filter-options">
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="cafe">
+                        <span>☕ 카페</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="restaurant">
+                        <span>🍽️ 음식점</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="attraction">
+                        <span>🎯 관광명소</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="culture">
+                        <span>🎭 문화시설</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="shopping">
+                        <span>🛍️ 쇼핑</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="filter-title">가격대</h3>
+                <div class="filter-options">
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="low">
+                        <span>💰 저가 (1-2만원)</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="medium">
+                        <span>💰💰 중가 (2-5만원)</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="high">
+                        <span>💰💰💰 고가 (5만원 이상)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="filter-title">분위기</h3>
+                <div class="filter-options">
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="romantic">
+                        <span>💕 로맨틱</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="casual">
+                        <span>😊 캐주얼</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="trendy">
+                        <span>✨ 트렌디</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" class="filter-checkbox" value="quiet">
+                        <span>🤫 조용한</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="toggle-btn" onclick="toggleSidebar()">></div>
     </div>
-    <div class="toggle-btn" onclick="toggleSidebar()">></div>
-</div>
-<div class="right-box"></div>
+    <div class="right-box">
+        <div class="search-interface">
+            <h1 class="search-title">💕 장소 검색</h1>
+            <p class="search-subtitle">완벽한 데이트 장소를 찾아보세요</p>
+            
+            <div class="search-input-container">
+                <input type="text" class="search-input" placeholder="카페, 맛집, 관광지 등을 검색해보세요...">
+                <button class="search-btn">🔍</button>
+            </div>
+            
+            <div class="quick-search">
+                <div class="quick-tag">홍대 카페</div>
+                <div class="quick-tag">강남 맛집</div>
+                <div class="quick-tag">명동 쇼핑</div>
+                <div class="quick-tag">한강 공원</div>
+                <div class="quick-tag">이태원 바</div>
+            </div>
+        </div>
+    </div>
 </div>
 <script>
 function toggleSidebar() {
