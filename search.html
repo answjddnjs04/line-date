@@ -32,49 +32,58 @@
         }
 
         .header-content {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: flex-start;
+}
 
-        .logo {
-            font-size: 1.5rem;
-            text-decoration: none;
-            color: #03c75a;
-        }
+.home-btn {
+    font-size: 2rem;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-        .search-container {
-            flex: 1;
-            max-width: 600px;
-            position: relative;
-        }
+.home-btn:hover {
+    transform: scale(1.1);
+}
 
-        .search-input {
-            width: 100%;
-            height: 38px;
-            padding: 0 40px 0 16px;
-            font-size: 14px;
-            border: 2px solid #03c75a;
-            border-radius: 2px;
-            outline: none;
-            background: white;
-        }
+.search-container {
+    flex: 1;
+    max-width: 500px;
+    position: relative;
+}
 
-        .search-input:focus {
-            border-color: #00a644;
-        }
+.search-input {
+    width: 100%;
+    padding: 12px 45px 12px 16px;
+    font-size: 1rem;
+    border: 2px solid #e8ecf4;
+    border-radius: 12px;
+    outline: none;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+}
 
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
-            font-size: 16px;
-        }
+.search-input:focus {
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c7b8a;
+    font-size: 1.1rem;
+}
 
         /* 메인 컨테이너 */
         .main-container {
