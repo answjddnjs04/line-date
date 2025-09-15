@@ -122,6 +122,9 @@
     position: relative;
     z-index: 5;
 }
+        .toggle-btn.moved {
+    left: 453px;
+}
     </style>
 </head>
 <body>
@@ -143,7 +146,9 @@
 <script>
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.toggle-btn');
     sidebar.classList.toggle('active');
+    toggleBtn.classList.toggle('moved');
 }
 </script>
 </body>
