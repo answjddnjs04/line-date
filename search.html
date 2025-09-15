@@ -228,73 +228,31 @@
     color: white;
     padding: 15px;
     border-bottom: 1px solid #e8ecf4;
-    min-height: 120px;
-}
-
-.course-header {
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 15px;
+    min-height: auto;
 }
 
 .course-list {
-    display: flex;
-    align-items: center;
+    display: grid;
     gap: 15px;
-    overflow-x: auto;
-    padding: 5px 0;
+    justify-items: center;
+    align-items: center;
+}
+
+.course-list.single-row {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    max-width: 100%;
+}
+
+.course-list.two-rows {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
 }
 
 .course-item {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-.course-box {
-    width: 60px;
-    height: 60px;
-    background: white;
-    border-radius: 8px;
-    position: relative;
-    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.course-number {
-    position: absolute;
-    top: -8px;
-    left: -8px;
-    width: 20px;
-    height: 20px;
-    background: #667eea;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-    border: 2px solid white;
-}
-
-.course-name {
-    color: white;
-    font-size: 0.8rem;
-    text-align: center;
-    margin-top: 8px;
-    font-weight: 500;
-}
-
-.course-arrow {
-    color: white;
-    font-size: 1.2rem;
-    opacity: 0.7;
+    gap: 8px;
 }
 
 .chat-messages {
@@ -509,7 +467,6 @@
     <div class="sidebar active" id="sidebar">
         <div class="chat-container">
     <div class="course-display" id="courseDisplay">
-    <div class="course-header">💕 데이트 코스</div>
     <div class="course-list" id="courseList">
         <!-- 코스들이 여기에 동적으로 추가됩니다 -->
     </div>
@@ -620,18 +577,19 @@ function addMessage(text, sender) {
     const courseList = document.getElementById('courseList');
     courseList.innerHTML = '';
     
+    // 레이아웃 클래스 설정
+    if (count <= 5) {
+        courseList.className = 'course-list single-row';
+    } else {
+        courseList.className = 'course-list two-rows';
+    }
+    
     const courseNames = ['정원 카페', '이탈리안 레스토랑', '영화관', '공원 산책', '디저트 카페', '야경 명소'];
     
     for (let i = 0; i < count; i++) {
         // 코스 아이템 컨테이너
         const courseItem = document.createElement('div');
         courseItem.className = 'course-item';
-        
-        // 코스 박스와 이름을 감싸는 컨테이너
-        const courseContainer = document.createElement('div');
-        courseContainer.style.display = 'flex';
-        courseContainer.style.flexDirection = 'column';
-        courseContainer.style.alignItems = 'center';
         
         // 코스 박스
         const courseBox = document.createElement('div');
@@ -648,17 +606,8 @@ function addMessage(text, sender) {
         courseName.textContent = courseNames[i] || `코스 ${i + 1}`;
         
         courseBox.appendChild(courseNumber);
-        courseContainer.appendChild(courseBox);
-        courseContainer.appendChild(courseName);
-        courseItem.appendChild(courseContainer);
-        
-        // 화살표 추가 (마지막 코스가 아닐 때)
-        if (i < count - 1) {
-            const arrow = document.createElement('div');
-            arrow.className = 'course-arrow';
-            arrow.textContent = '▶';
-            courseItem.appendChild(arrow);
-        }
+        courseItem.appendChild(courseBox);
+        courseItem.appendChild(courseName);
         
         courseList.appendChild(courseItem);
     }
