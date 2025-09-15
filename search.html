@@ -507,10 +507,11 @@ async function loadKakaoMapScript() {
     });
 }
 
-// 페이지 로드시 카카오맵 준비
+// 페이지 로드시 카카오맵 준비 및 초기화
 window.addEventListener('load', async function() {
     try {
         await loadKakaoMapScript();
+        await initSearchMap();
         console.log('✅ 카카오맵 준비 완료');
     } catch (error) {
         console.error('❌ 카카오맵 초기화 실패:', error);
