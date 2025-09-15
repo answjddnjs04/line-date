@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>검색 - 데이트 코스 플래너</title>
-    
+    <title>두 개의 박스</title>
     <style>
         * {
             margin: 0;
@@ -13,25 +12,31 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9ff;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
             height: 100vh;
         }
 
-        .left-panel {
+        .left-box {
             width: 63px;
             height: 949px;
-            background: white;
-            position: absolute;
-            left: 0;
-            top: 0;
+            background-color: yellow;
+        }
+
+        .right-box {
+            width: 1302px;
+            height: 949px;
+            background-color: green;
         }
     </style>
 </head>
 <body>
-    <div class="left-panel">
-        <a href="home.html" class="home-button">💕</a>
+    <div class="container">
+        <div class="left-box"></div>
+        <div class="right-box"></div>
     </div>
-    <div class="map-container"></div>
 </body>
 </html>
