@@ -285,6 +285,24 @@
     flex-shrink: 0;
 }
 
+.course-number {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #ff0000;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 .course-name {
     color: white;
     text-align: center;
@@ -596,34 +614,40 @@ function addMessage(text, sender) {
     const courseList = document.getElementById('courseList');
     courseList.innerHTML = '';
     
-    // 개수에 따른 크기 계산
-    let boxSize, fontSize, numberSize;
+    // 개수에 따른 크기와 마진 계산
+    let boxSize, fontSize, numberSize, itemMargin;
     if (count <= 3) {
         boxSize = 60;
         fontSize = '0.8rem';
         numberSize = 20;
+        itemMargin = '0 8px';
     } else if (count <= 4) {
         boxSize = 50;
         fontSize = '0.75rem';
         numberSize = 18;
+        itemMargin = '0 6px';
     } else if (count <= 5) {
         boxSize = 45;
         fontSize = '0.7rem';
         numberSize = 16;
+        itemMargin = '0 4px';
     } else {
         boxSize = 40;
         fontSize = '0.65rem';
         numberSize = 15;
+        itemMargin = '0 3px';
     }
     
     courseList.className = 'course-list';
     
     const courseNames = ['정원 카페', '이탈리안 레스토랑', '영화관', '공원 산책', '디저트 카페', '야경 명소'];
+    const colors = ['#ff0000', '#ff8000', '#ffff00', '#00ff00', '#0080ff', '#8000ff']; // 빨주노초파남
     
     for (let i = 0; i < count; i++) {
         // 코스 아이템 컨테이너
         const courseItem = document.createElement('div');
         courseItem.className = 'course-item';
+        courseItem.style.margin = itemMargin;
         
         // 코스 박스
         const courseBox = document.createElement('div');
@@ -638,8 +662,7 @@ function addMessage(text, sender) {
         courseNumber.style.width = `${numberSize}px`;
         courseNumber.style.height = `${numberSize}px`;
         courseNumber.style.fontSize = `${numberSize * 0.6}px`;
-        courseNumber.style.top = `-${numberSize/2}px`;
-        courseNumber.style.left = `-${numberSize/2}px`;
+        courseNumber.style.backgroundColor = colors[i];
         
         // 코스 이름
         const courseName = document.createElement('div');
