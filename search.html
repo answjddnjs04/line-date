@@ -83,7 +83,7 @@
     left: -390px;
     top: 0;
     transition: left 0.3s ease;
-    z-index: 5;
+    z-index: 7;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 
@@ -103,6 +103,22 @@
     padding: 20px;
     height: 100%;
     overflow-y: auto;
+}
+        .left-container {
+    display: flex;
+    flex-direction: column;
+    width: 63px;
+    height: 100vh;
+    position: relative;
+    z-index: 10;
+}
+
+.right-box {
+    flex: 1;
+    height: 100vh;
+    background-color: green;
+    position: relative;
+    z-index: 10;
 }
     </style>
 </head>
