@@ -252,7 +252,14 @@
     color: white;
     padding: 15px;
     border-bottom: 1px solid #e8ecf4;
-    min-height: auto;
+    height: 95px;
+    display: flex;
+    align-items: center;
+}
+
+.course-arrow {
+    align-self: flex-start;
+    margin-top: 8px !important;
 }
 
 .course-list {
@@ -664,6 +671,7 @@ function addMessage(text, sender) {
         courseBox.style.height = `${boxSize}px`;
         courseBox.style.backgroundColor = colors[i];
         courseBox.style.padding = boxPadding;
+        courseBox.style.border = '2px solid white';
         
         // 코스 번호
         const courseNumber = document.createElement('div');
@@ -695,8 +703,9 @@ function addMessage(text, sender) {
             arrow.style.fontSize = arrowSize;
             arrow.style.fontWeight = 'bold';
             arrow.style.display = 'flex';
-            arrow.style.alignItems = 'center';
+            arrow.style.alignItems = 'flex-start';
             arrow.style.margin = '0 2px';
+            arrow.style.marginTop = '8px';
             
             courseList.appendChild(arrow);
         }
