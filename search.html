@@ -507,12 +507,15 @@ async function loadKakaoMapScript() {
     });
 }
 
-// 페이지 로드시 카카오맵 준비 및 초기화
-window.addEventListener('load', async function() {
+// DOMContentLoaded 후 카카오맵 준비 및 초기화
+document.addEventListener('DOMContentLoaded', async function() {
     try {
         await loadKakaoMapScript();
-        await initSearchMap();
-        console.log('✅ 카카오맵 준비 완료');
+        // DOM이 완전히 로드된 후 잠시 대기
+        setTimeout(async () => {
+            await initSearchMap();
+            console.log('✅ 카카오맵 준비 완료');
+        }, 100);
     } catch (error) {
         console.error('❌ 카카오맵 초기화 실패:', error);
     }
