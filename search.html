@@ -288,6 +288,59 @@
         .filter-checkbox {
             accent-color: #667eea;
         }
+        .map-container {
+    margin-top: 30px;
+    width: 100%;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.search-map {
+    width: 100%;
+    height: 400px;
+}
+
+.search-results {
+    max-height: 300px;
+    overflow-y: auto;
+    background: #f8f9ff;
+}
+
+.result-item {
+    padding: 15px;
+    border-bottom: 1px solid #e8ecf4;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.result-item:hover {
+    background: white;
+}
+
+.result-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.result-category {
+    font-size: 0.9rem;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.result-address {
+    font-size: 0.9rem;
+    color: #6c7b8a;
+}
+
+.loading-message {
+    text-align: center;
+    padding: 20px;
+    color: #667eea;
+}
 </style>
 </head>
 <body>
@@ -376,24 +429,30 @@
         <div class="toggle-btn" onclick="toggleSidebar()">></div>
     </div>
     <div class="right-box">
-        <div class="search-interface">
-            <h1 class="search-title">💕 장소 검색</h1>
-            <p class="search-subtitle">완벽한 데이트 장소를 찾아보세요</p>
-            
-            <div class="search-input-container">
-                <input type="text" class="search-input" placeholder="카페, 맛집, 관광지 등을 검색해보세요...">
-                <button class="search-btn">🔍</button>
-            </div>
-            
-            <div class="quick-search">
-                <div class="quick-tag">홍대 카페</div>
-                <div class="quick-tag">강남 맛집</div>
-                <div class="quick-tag">명동 쇼핑</div>
-                <div class="quick-tag">한강 공원</div>
-                <div class="quick-tag">이태원 바</div>
-            </div>
+    <div class="search-interface">
+        <h1 class="search-title">💕 장소 검색</h1>
+        <p class="search-subtitle">완벽한 데이트 장소를 찾아보세요</p>
+        
+        <div class="search-input-container">
+            <input type="text" id="mainSearch" class="search-input" placeholder="카페, 맛집, 관광지 등을 검색해보세요...">
+            <button class="search-btn" onclick="searchPlaces()">🔍</button>
+        </div>
+        
+        <div class="quick-search">
+            <div class="quick-tag" onclick="quickSearch('홍대 카페')">홍대 카페</div>
+            <div class="quick-tag" onclick="quickSearch('강남 맛집')">강남 맛집</div>
+            <div class="quick-tag" onclick="quickSearch('명동 쇼핑')">명동 쇼핑</div>
+            <div class="quick-tag" onclick="quickSearch('한강 공원')">한강 공원</div>
+            <div class="quick-tag" onclick="quickSearch('이태원 바')">이태원 바</div>
+        </div>
+        
+        <!-- 지도 컨테이너 추가 -->
+        <div id="mapContainer" class="map-container" style="display: none;">
+            <div id="searchMap" class="search-map"></div>
+            <div id="searchResults" class="search-results"></div>
         </div>
     </div>
+</div>
 </div>
 <script>
 function toggleSidebar() {
@@ -414,6 +473,52 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleBtn = document.querySelector('.toggle-btn');
     toggleBtn.textContent = '<';
 });
+
+// 카카오맵 스크립트 동적 로드
+async function loadKakaoMapScript() {
+    return new Promise((resolve, reject) => {
+        if (typeof kakao !== 'undefined') {
+            resolve();
+            return;
+        }
+        
+        fetch('/api/get-kakao-key')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success || !data.key) {
+                    throw new Error('카카오 API 키를 가져올 수 없습니다.');
+                }
+                
+                const script = document.createElement('script');
+                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${data.key}&libraries=services&autoload=false`;
+                script.onload = () => {
+                    kakao.maps.load(() => {
+                        console.log('카카오맵 스크립트 로드 완료');
+                        resolve();
+                    });
+                };
+                script.onerror = () => {
+                    reject(new Error('카카오맵 스크립트 로드 실패'));
+                };
+                document.head.appendChild(script);
+            })
+            .catch(error => {
+                console.error('❌ 카카오 API 키 로드 실패:', error);
+                reject(error);
+            });
+    });
+}
+
+// 페이지 로드시 카카오맵 준비
+window.addEventListener('load', async function() {
+    try {
+        await loadKakaoMapScript();
+        console.log('✅ 카카오맵 준비 완료');
+    } catch (error) {
+        console.error('❌ 카카오맵 초기화 실패:', error);
+    }
+});
 </script>
+<script src="js/search-map.js"></script>
 </body>
 </html>
