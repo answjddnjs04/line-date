@@ -615,31 +615,35 @@ function addMessage(text, sender) {
     courseList.innerHTML = '';
     
     // 개수에 따른 크기와 마진 계산
-    let boxSize, fontSize, numberSize, itemMargin, boxMargin;
+    let boxSize, fontSize, numberSize, itemMargin, boxPadding, arrowSize;
     if (count <= 3) {
         boxSize = 60;
         fontSize = '0.8rem';
         numberSize = 20;
-        itemMargin = '0 8px';
-        boxMargin = '10px';
+        itemMargin = '0 4px';
+        boxPadding = '4px';
+        arrowSize = '16px';
     } else if (count <= 4) {
         boxSize = 50;
         fontSize = '0.75rem';
         numberSize = 18;
-        itemMargin = '0 6px';
-        boxMargin = '8px';
+        itemMargin = '0 3px';
+        boxPadding = '3px';
+        arrowSize = '14px';
     } else if (count <= 5) {
         boxSize = 45;
         fontSize = '0.7rem';
         numberSize = 16;
-        itemMargin = '0 4px';
-        boxMargin = '6px';
+        itemMargin = '0 2px';
+        boxPadding = '3px';
+        arrowSize = '12px';
     } else {
         boxSize = 40;
         fontSize = '0.65rem';
         numberSize = 15;
-        itemMargin = '0 3px';
-        boxMargin = '4px';
+        itemMargin = '0 2px';
+        boxPadding = '2px';
+        arrowSize = '10px';
     }
     
     courseList.className = 'course-list';
@@ -659,7 +663,7 @@ function addMessage(text, sender) {
         courseBox.style.width = `${boxSize}px`;
         courseBox.style.height = `${boxSize}px`;
         courseBox.style.backgroundColor = colors[i];
-        courseBox.style.margin = boxMargin;
+        courseBox.style.padding = boxPadding;
         
         // 코스 번호
         const courseNumber = document.createElement('div');
@@ -681,6 +685,21 @@ function addMessage(text, sender) {
         courseItem.appendChild(courseName);
         
         courseList.appendChild(courseItem);
+        
+        // 마지막이 아니면 화살표 추가
+        if (i < count - 1) {
+            const arrow = document.createElement('div');
+            arrow.className = 'course-arrow';
+            arrow.textContent = '>';
+            arrow.style.color = 'white';
+            arrow.style.fontSize = arrowSize;
+            arrow.style.fontWeight = 'bold';
+            arrow.style.display = 'flex';
+            arrow.style.alignItems = 'center';
+            arrow.style.margin = '0 2px';
+            
+            courseList.appendChild(arrow);
+        }
     }
 }
 
