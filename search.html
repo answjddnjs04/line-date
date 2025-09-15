@@ -51,17 +51,36 @@
             height: 100vh;
             background-color: green;
         }
+        .toggle-btn {
+    width: 23px;
+    height: 46px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    position: relative;
+    z-index: 10;
+}
+
+.toggle-btn:hover {
+    background-color: #e0e0e0;
+}
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="left-container">
-            <div class="logo-box">
-                <div class="logo-icon" onclick="location.href='home.html'">💕</div>
-            </div>
-            <div class="left-box"></div>
+    <div class="left-container">
+        <div class="logo-box">
+            <div class="logo-icon" onclick="location.href='home.html'">💕</div>
         </div>
-        <div class="right-box"></div>
+        <div class="left-box"></div>
     </div>
+    <div class="toggle-btn">></div>
+    <div class="right-box"></div>
+</div>
 </body>
 </html>
