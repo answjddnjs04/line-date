@@ -271,7 +271,7 @@
         </div>
         <div class="left-box"></div>
     </div>
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar active" id="sidebar">
         <div class="sidebar-content">
             <div class="sidebar-header">
                 <h2 class="sidebar-title">🔍 검색 필터</h2>
@@ -378,6 +378,12 @@ function toggleSidebar() {
         toggleBtn.textContent = '>';
     }
 }
+
+// 페이지 로드시 사이드바 열린 상태로 초기화
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtn = document.querySelector('.toggle-btn');
+    toggleBtn.textContent = '<';
+});
 </script>
 </body>
 </html>
