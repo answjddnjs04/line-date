@@ -31,25 +31,34 @@ class SearchMap {
             }
 
             const options = {
-                center: new kakao.maps.LatLng(37.5665, 126.9780),
-                level: 7
-            };
+    center: new kakao.maps.LatLng(37.5665, 126.9780),
+    level: 7,
+    scrollwheel: true,
+    disableDoubleClick: false,
+    disableDoubleClickZoom: false,
+    keyboardShortcuts: true
+};
 
-            try {
-                this.map = new kakao.maps.Map(container, options);
-                this.ps = new kakao.maps.services.Places();
-                console.log('✅ 검색 지도 초기화 완료');
-                
-                // 지도 크기 재조정
-                setTimeout(() => {
-                    this.map.relayout();
-                }, 200);
-                
-                resolve();
-            } catch (error) {
-                console.error('❌ 지도 생성 중 오류:', error);
-                reject(new Error(`지도 생성 실패: ${error.message}`));
-            }
+try {
+    this.map = new kakao.maps.Map(container, options);
+    this.ps = new kakao.maps.services.Places();
+    
+    // 지도 컨트롤 최적화
+    this.map.setDraggable(true);
+    this.map.setZoomable(true);
+    
+    console.log('✅ 검색 지도 초기화 완료');
+    
+    // 지도 크기 재조정
+    setTimeout(() => {
+        this.map.relayout();
+    }, 200);
+    
+    resolve();
+} catch (error) {
+    console.error('❌ 지도 생성 중 오류:', error);
+    reject(new Error(`지도 생성 실패: ${error.message}`));
+}
         });
     });
 }
