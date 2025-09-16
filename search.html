@@ -493,6 +493,120 @@
     text-align: center;
     line-height: 1;
 }
+
+.detail-course-box {
+    width: 63px;
+    height: 63px;
+    background: white;
+    border-right: 1px solid #e8ecf4;
+    border-bottom: 1px solid #e8ecf4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.detail-course-box:hover {
+    background: #f8f9ff;
+    transform: translateX(2px);
+}
+
+.detail-course-box.active {
+    background: linear-gradient(135deg, #667eea20, #764ba220);
+    border-right-color: #667eea;
+}
+
+.detail-course-icon {
+    font-size: 20px;
+    margin-bottom: 2px;
+    color: #667eea;
+}
+
+.detail-course-text {
+    font-size: 8px;
+    font-weight: 600;
+    color: #667eea;
+    text-align: center;
+    line-height: 1;
+}
+
+.right-sidebar {
+    width: 400px;
+    height: 100vh;
+    background: white;
+    border-left: 1px solid #e8ecf4;
+    position: absolute;
+    right: -337px;
+    top: 0;
+    transition: right 0.3s ease;
+    z-index: 8;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+}
+
+.right-sidebar.active {
+    right: 0;
+}
+
+.detail-course-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: white;
+}
+
+.detail-course-header {
+    padding: 20px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    text-align: center;
+    border-bottom: 1px solid #e8ecf4;
+}
+
+.detail-course-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.detail-course-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.no-course-message {
+    text-align: center;
+    color: #6c7b8a;
+    margin-top: 50px;
+    line-height: 1.6;
+}
+
+.right-toggle-btn {
+    width: 23px;
+    height: 46px;
+    background: white;
+    border: 1px solid #e8ecf4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #667eea;
+    position: absolute;
+    left: -23px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 15;
+    border-radius: 8px 0 0 8px;
+    transition: all 0.3s ease;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+}
+
+.right-toggle-btn:hover {
+    background: #f8f9ff;
+    color: #5a6fd8;
+}
 </style>
 </head>
 <body>
@@ -505,6 +619,10 @@
     <div class="ai-chat-box">
     <div class="ai-chat-icon">💬</div>
     <div class="ai-chat-text">AI 채팅</div>
+</div>
+<div class="detail-course-box" id="detailCourseBox">
+    <div class="detail-course-icon">📋</div>
+    <div class="detail-course-text">세부 코스</div>
 </div>
 <div class="left-box"></div>
 </div>
@@ -537,6 +655,21 @@
     <div class="right-box">
     <div id="searchMap" class="full-screen-map"></div>
 </div>
+
+<div class="right-sidebar" id="rightSidebar">
+    <div class="detail-course-container">
+        <div class="detail-course-header">
+            <h3>세부 데이트 코스</h3>
+        </div>
+        <div class="detail-course-content" id="detailCourseContent">
+            <div class="no-course-message">
+                아직 생성된 코스가 없습니다.<br>
+                AI 채팅에서 코스를 만들어보세요!
+            </div>
+        </div>
+    </div>
+    <div class="right-toggle-btn" onclick="toggleRightSidebar()">></div>
+</div>
 <script>
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
@@ -557,14 +690,20 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleBtn.textContent = '<';
     
     // 엔터키로 메시지 전송
-    const chatInput = document.getElementById('chatInput');
-    if (chatInput) {
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    }
+const chatInput = document.getElementById('chatInput');
+if (chatInput) {
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+}
+
+// 세부 코스 버튼 이벤트
+const detailCourseBox = document.getElementById('detailCourseBox');
+if (detailCourseBox) {
+    detailCourseBox.addEventListener('click', toggleDetailCourse);
+}
 });
 
 function sendMessage() {
@@ -726,6 +865,29 @@ const sizeConfig = {
             
             courseList.appendChild(arrow);
         }
+    }
+}
+
+function toggleDetailCourse() {
+    const detailCourseBox = document.getElementById('detailCourseBox');
+    const rightSidebar = document.getElementById('rightSidebar');
+    
+    detailCourseBox.classList.toggle('active');
+    rightSidebar.classList.toggle('active');
+}
+
+function toggleRightSidebar() {
+    const rightSidebar = document.getElementById('rightSidebar');
+    const rightToggleBtn = document.querySelector('.right-toggle-btn');
+    const detailCourseBox = document.getElementById('detailCourseBox');
+    
+    rightSidebar.classList.toggle('active');
+    detailCourseBox.classList.toggle('active');
+    
+    if (rightSidebar.classList.contains('active')) {
+        rightToggleBtn.textContent = '<';
+    } else {
+        rightToggleBtn.textContent = '>';
     }
 }
 
