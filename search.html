@@ -386,6 +386,17 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+.typing-indicator {
+    animation: typing 1.5s ease-in-out infinite;
+    font-size: 1.2rem;
+    color: #667eea;
+}
+
+@keyframes typing {
+    0%, 60% { opacity: 1; }
+    30% { opacity: 0.4; }
+}
         .map-container {
     margin-top: 30px;
     width: 100%;
@@ -636,11 +647,11 @@
     
     <div class="chat-messages" id="chatMessages">
         <div class="message ai-message">
-            <div class="message-content">
-                안녕하세요! 완벽한 데이트 장소를 찾아드릴게요. 어떤 종류의 장소를 찾고 계신가요?
-            </div>
-            <div class="message-time">방금 전</div>
-        </div>
+    <div class="message-content">
+        안녕하세요! 완벽한 데이트 코스를 만들어드릴게요! 💕<br><br>먼저 데이트 희망 지역을 알려주세요.<br>(예: 홍대, 강남, 명동, 부산 해운대 등)
+    </div>
+    <div class="message-time">방금 전</div>
+</div>
     </div>
     
     <div class="chat-input-container">
@@ -706,7 +717,7 @@ if (detailCourseBox) {
 }
 });
 
-function sendMessage() {
+async function sendMessage() {
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
     
@@ -716,30 +727,41 @@ function sendMessage() {
     addMessage(message, 'user');
     input.value = '';
     
-    // 숫자 입력 체크 및 코스 표시
-    const number = parseInt(message);
-    if (number >= 1 && number <= 6) {
-        displayCourses(number);
-        addMessage(`${number}개의 데이트 코스를 표시했습니다!`, 'ai');
-    } else {
-        // AI 응답 시뮬레이션
-        setTimeout(() => {
-            const responses = [
-                "1~6 사이의 숫자를 입력하면 해당 개수만큼 데이트 코스를 보여드릴게요!",
-                "좋은 선택이에요! 해당 지역의 인기 장소들을 찾아볼게요.",
-                "그 지역에 멋진 카페들이 많아요. 지도에서 확인해보세요!",
-                "로맨틱한 분위기의 장소들을 추천해드릴게요."
-            ];
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            addMessage(randomResponse, 'ai');
-        }, 1000);
+    // 로딩 표시
+    const loadingMessage = addMessage("생각하는 중...", 'ai', true);
+    
+    try {
+        // 채팅 기반 코스 생성 처리
+        const response = await chatCourseGenerator.processUserInput(message);
+        
+        // 로딩 메시지 제거
+        if (loadingMessage && loadingMessage.parentNode) {
+            loadingMessage.parentNode.removeChild(loadingMessage);
+        }
+        
+        // AI 응답 추가
+        addMessage(response, 'ai');
+        
+    } catch (error) {
+        console.error('메시지 처리 오류:', error);
+        
+        // 로딩 메시지 제거
+        if (loadingMessage && loadingMessage.parentNode) {
+            loadingMessage.parentNode.removeChild(loadingMessage);
+        }
+        
+        addMessage('죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.', 'ai');
     }
 }
 
-function addMessage(text, sender) {
+function addMessage(text, sender, isLoading = false) {
     const messagesContainer = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}-message`;
+    
+    if (isLoading) {
+        messageDiv.classList.add('loading-message');
+    }
     
     const now = new Date();
     const timeString = now.toLocaleTimeString('ko-KR', { 
@@ -748,12 +770,14 @@ function addMessage(text, sender) {
     });
     
     messageDiv.innerHTML = `
-        <div class="message-content">${text}</div>
+        <div class="message-content">${isLoading ? '<div class="typing-indicator">●●●</div>' : text.replace(/\n/g, '<br>')}</div>
         <div class="message-time">${timeString}</div>
     `;
     
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    return messageDiv;
 }
 
 function displayCourses(count) {
@@ -958,5 +982,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 </script>
 <script src="js/search-map.js"></script>
+<script src="js/chat-course-generator.js"></script>
 </body>
 </html>
