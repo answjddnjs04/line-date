@@ -577,25 +577,24 @@ function sendMessage() {
     addMessage(message, 'user');
     input.value = '';
     
-    // AI 응답 시뮬레이션
     // 숫자 입력 체크 및 코스 표시
-const number = parseInt(message);
-if (number >= 1 && number <= 6) {
-    displayCourses(number);
-    addMessage(`${number}개의 데이트 코스를 표시했습니다!`, 'ai');
-} else {
-    // AI 응답 시뮬레이션
-    setTimeout(() => {
-        const responses = [
-            "1~6 사이의 숫자를 입력하면 해당 개수만큼 데이트 코스를 보여드릴게요!",
-            "좋은 선택이에요! 해당 지역의 인기 장소들을 찾아볼게요.",
-            "그 지역에 멋진 카페들이 많아요. 지도에서 확인해보세요!",
-            "로맨틱한 분위기의 장소들을 추천해드릴게요."
-        ];
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        addMessage(randomResponse, 'ai');
-    }, 1000);
-}
+    const number = parseInt(message);
+    if (number >= 1 && number <= 6) {
+        displayCourses(number);
+        addMessage(`${number}개의 데이트 코스를 표시했습니다!`, 'ai');
+    } else {
+        // AI 응답 시뮬레이션
+        setTimeout(() => {
+            const responses = [
+                "1~6 사이의 숫자를 입력하면 해당 개수만큼 데이트 코스를 보여드릴게요!",
+                "좋은 선택이에요! 해당 지역의 인기 장소들을 찾아볼게요.",
+                "그 지역에 멋진 카페들이 많아요. 지도에서 확인해보세요!",
+                "로맨틱한 분위기의 장소들을 추천해드릴게요."
+            ];
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            addMessage(randomResponse, 'ai');
+        }, 1000);
+    }
 }
 
 function addMessage(text, sender) {
@@ -617,7 +616,8 @@ function addMessage(text, sender) {
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
-    function displayCourses(count) {
+
+function displayCourses(count) {
     const courseList = document.getElementById('courseList');
     courseList.innerHTML = '';
     
@@ -670,12 +670,11 @@ function addMessage(text, sender) {
             arrow.style.fontWeight = 'bold';
             arrow.style.display = 'flex';
             arrow.style.alignItems = 'flex-start';
-            arrow.style.margin = '4px 1px 0px'; // 기존 8px에서 4px로 반 감소
+            arrow.style.margin = '4px 1px 0px';
             
             courseList.appendChild(arrow);
         }
     }
-}
 }
 
 // 카카오맵 스크립트 동적 로드
