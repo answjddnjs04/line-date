@@ -624,40 +624,75 @@ function displayCourses(count) {
     const colors = ['#FF0000', '#FF8000', '#FFFF00', '#00FF00', '#0080FF', '#8000FF'];
     const courseNames = ['정원 카페', '이탈리안 레스토랑', '영화관', '공원 산책', '디저트 카페', '야경 명소'];
     
+    // 코스 개수별 크기 설정 (359px 전체 활용)
+    const sizeConfig = {
+        3: { boxSize: 56, arrowWidth: 20, gap: 6, fontSize: '0.75rem', numberSize: 18 },
+        4: { boxSize: 44, arrowWidth: 16, gap: 4, fontSize: '0.65rem', numberSize: 16 },
+        5: { boxSize: 36, arrowWidth: 14, gap: 3, fontSize: '0.6rem', numberSize: 14 },
+        6: { boxSize: 30, arrowWidth: 12, gap: 2, fontSize: '0.55rem', numberSize: 12 }
+    };
+    
+    const config = sizeConfig[count] || sizeConfig[6];
+    
     for (let i = 0; i < count; i++) {
         // 코스 아이템 컨테이너
         const courseItem = document.createElement('div');
         courseItem.className = 'course-item';
-        courseItem.style.margin = '1px';
+        courseItem.style.display = 'flex';
+        courseItem.style.flexDirection = 'column';
+        courseItem.style.alignItems = 'center';
+        courseItem.style.gap = '4px';
+        courseItem.style.margin = '0';
         
         // 코스 박스
         const courseBox = document.createElement('div');
         courseBox.className = 'course-box';
-        courseBox.style.width = '32px';
-        courseBox.style.height = '32px';
+        courseBox.style.width = config.boxSize + 'px';
+        courseBox.style.height = config.boxSize + 'px';
         courseBox.style.backgroundColor = colors[i % colors.length];
-        courseBox.style.padding = '2px';
         courseBox.style.border = '2px solid white';
+        courseBox.style.borderRadius = '8px';
+        courseBox.style.position = 'relative';
+        courseBox.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
         
         // 코스 번호
         const courseNumber = document.createElement('div');
         courseNumber.className = 'course-number';
         courseNumber.textContent = i + 1;
-        courseNumber.style.width = '12px';
-        courseNumber.style.height = '12px';
-        courseNumber.style.fontSize = '7.2px';
+        courseNumber.style.position = 'absolute';
+        courseNumber.style.top = '0';
+        courseNumber.style.left = '0';
+        courseNumber.style.transform = 'translate(-50%, -50%)';
+        courseNumber.style.width = config.numberSize + 'px';
+        courseNumber.style.height = config.numberSize + 'px';
+        courseNumber.style.backgroundColor = 'white';
+        courseNumber.style.color = '#333';
+        courseNumber.style.borderRadius = '50%';
+        courseNumber.style.display = 'flex';
+        courseNumber.style.alignItems = 'center';
+        courseNumber.style.justifyContent = 'center';
+        courseNumber.style.fontSize = (config.numberSize * 0.6) + 'px';
+        courseNumber.style.fontWeight = 'bold';
+        courseNumber.style.border = '2px solid white';
+        courseNumber.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+        courseNumber.style.zIndex = '20';
         
         // 코스 이름
         const courseName = document.createElement('div');
         courseName.className = 'course-name';
         courseName.textContent = courseNames[i] || `코스 ${i + 1}`;
-        courseName.style.fontSize = '0.55rem';
-        courseName.style.maxWidth = '52px';
+        courseName.style.fontSize = config.fontSize;
+        courseName.style.color = 'white';
+        courseName.style.textAlign = 'center';
+        courseName.style.fontWeight = '500';
+        courseName.style.whiteSpace = 'nowrap';
+        courseName.style.overflow = 'hidden';
+        courseName.style.textOverflow = 'ellipsis';
+        courseName.style.maxWidth = (config.boxSize + 10) + 'px';
         
         courseBox.appendChild(courseNumber);
         courseItem.appendChild(courseBox);
         courseItem.appendChild(courseName);
-        
         courseList.appendChild(courseItem);
         
         // 화살표 추가 (마지막 항목 제외)
@@ -666,11 +701,14 @@ function displayCourses(count) {
             arrow.className = 'course-arrow';
             arrow.textContent = '>';
             arrow.style.color = 'white';
-            arrow.style.fontSize = '9px';
+            arrow.style.fontSize = config.arrowWidth + 'px';
             arrow.style.fontWeight = 'bold';
             arrow.style.display = 'flex';
-            arrow.style.alignItems = 'flex-start';
-            arrow.style.margin = '4px 1px 0px';
+            arrow.style.alignItems = 'center';
+            arrow.style.justifyContent = 'center';
+            arrow.style.width = config.arrowWidth + 'px';
+            arrow.style.height = config.boxSize + 'px';
+            arrow.style.margin = `0 ${config.gap}px`;
             
             courseList.appendChild(arrow);
         }
