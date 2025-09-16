@@ -621,84 +621,38 @@ function addMessage(text, sender) {
     const courseList = document.getElementById('courseList');
     courseList.innerHTML = '';
     
-    // 개수에 따른 크기와 마진 계산
-    let boxSize, fontSize, numberSize, itemMargin, boxPadding, arrowSize, arrowMargin;
-    if (count <= 2) {
-        boxSize = 50;
-        fontSize = '0.75rem';
-        numberSize = 18;
-        itemMargin = '0 3px';
-        boxPadding = '3px';
-        arrowSize = '14px';
-        arrowMargin = '0 4px';
-    } else if (count <= 3) {
-        boxSize = 45;
-        fontSize = '0.7rem';
-        numberSize = 16;
-        itemMargin = '0 2px';
-        boxPadding = '3px';
-        arrowSize = '12px';
-        arrowMargin = '0 3px';
-    } else if (count <= 4) {
-        boxSize = 40;
-        fontSize = '0.65rem';
-        numberSize = 14;
-        itemMargin = '0 2px';
-        boxPadding = '2px';
-        arrowSize = '11px';
-        arrowMargin = '0 2px';
-    } else if (count <= 5) {
-        boxSize = 36;
-        fontSize = '0.6rem';
-        numberSize = 13;
-        itemMargin = '0.1px';
-        boxPadding = '2px';
-        arrowSize = '10px';
-        arrowMargin = '0 1px';
-    } else {
-        boxSize = 32;
-        fontSize = '0.55rem';
-        numberSize = 12;
-        itemMargin = '1px';
-        boxPadding = '2px';
-        arrowSize = '9px';
-        arrowMargin = '0 1px';
-    }
-    
-    courseList.className = 'course-list';
-    
+    const colors = ['#FF0000', '#FF8000', '#FFFF00', '#00FF00', '#0080FF', '#8000FF'];
     const courseNames = ['정원 카페', '이탈리안 레스토랑', '영화관', '공원 산책', '디저트 카페', '야경 명소'];
-    const colors = ['#ff0000', '#ff8000', '#ffff00', '#00ff00', '#0080ff', '#8000ff']; // 빨주노초파남
     
     for (let i = 0; i < count; i++) {
         // 코스 아이템 컨테이너
         const courseItem = document.createElement('div');
         courseItem.className = 'course-item';
-        courseItem.style.margin = itemMargin;
+        courseItem.style.margin = '1px';
         
         // 코스 박스
         const courseBox = document.createElement('div');
         courseBox.className = 'course-box';
-        courseBox.style.width = `${boxSize}px`;
-        courseBox.style.height = `${boxSize}px`;
-        courseBox.style.backgroundColor = colors[i];
-        courseBox.style.padding = boxPadding;
+        courseBox.style.width = '32px';
+        courseBox.style.height = '32px';
+        courseBox.style.backgroundColor = colors[i % colors.length];
+        courseBox.style.padding = '2px';
         courseBox.style.border = '2px solid white';
         
         // 코스 번호
         const courseNumber = document.createElement('div');
         courseNumber.className = 'course-number';
         courseNumber.textContent = i + 1;
-        courseNumber.style.width = `${numberSize}px`;
-        courseNumber.style.height = `${numberSize}px`;
-        courseNumber.style.fontSize = `${numberSize * 0.6}px`;
+        courseNumber.style.width = '12px';
+        courseNumber.style.height = '12px';
+        courseNumber.style.fontSize = '7.2px';
         
         // 코스 이름
         const courseName = document.createElement('div');
         courseName.className = 'course-name';
         courseName.textContent = courseNames[i] || `코스 ${i + 1}`;
-        courseName.style.fontSize = fontSize;
-        courseName.style.maxWidth = `${boxSize + 20}px`;
+        courseName.style.fontSize = '0.55rem';
+        courseName.style.maxWidth = '52px';
         
         courseBox.appendChild(courseNumber);
         courseItem.appendChild(courseBox);
@@ -706,22 +660,22 @@ function addMessage(text, sender) {
         
         courseList.appendChild(courseItem);
         
-        // 마지막이 아니면 화살표 추가
+        // 화살표 추가 (마지막 항목 제외)
         if (i < count - 1) {
             const arrow = document.createElement('div');
             arrow.className = 'course-arrow';
             arrow.textContent = '>';
             arrow.style.color = 'white';
-            arrow.style.fontSize = arrowSize;
+            arrow.style.fontSize = '9px';
             arrow.style.fontWeight = 'bold';
             arrow.style.display = 'flex';
             arrow.style.alignItems = 'flex-start';
-            arrow.style.margin = arrowMargin;
-            arrow.style.marginTop = '8px';
+            arrow.style.margin = '4px 1px 0px'; // 기존 8px에서 4px로 반 감소
             
             courseList.appendChild(arrow);
         }
     }
+}
 }
 
 // 카카오맵 스크립트 동적 로드
