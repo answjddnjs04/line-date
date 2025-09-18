@@ -397,6 +397,106 @@
     0%, 60% { opacity: 1; }
     30% { opacity: 0.4; }
 }
+
+/* 하단바 스타일 */
+.bottom-bar {
+    position: fixed;
+    bottom: -200px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid #e8ecf4;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    z-index: 1000;
+    transition: bottom 0.3s ease;
+}
+
+.bottom-bar.show {
+    bottom: 0;
+}
+
+.bottom-bar-content {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.bottom-bar-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.location-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.location-option {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f8f9ff;
+    border: 2px solid #e8ecf4;
+    border-radius: 15px;
+    padding: 15px;
+    min-width: 250px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.location-option:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.location-label {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.location-info {
+    flex: 1;
+}
+
+.location-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.location-address {
+    font-size: 0.9rem;
+    color: #6c7b8a;
+}
+
+.custom-marker {
+    z-index: 100;
+}
+
+@media (max-width: 768px) {
+    .location-options {
+        flex-direction: column;
+    }
+    
+    .location-option {
+        min-width: auto;
+        width: 100%;
+    }
+}
         .map-container {
     margin-top: 30px;
     width: 100%;
@@ -648,7 +748,7 @@
     <div class="chat-messages" id="chatMessages">
         <div class="message ai-message">
     <div class="message-content">
-        안녕하세요! 완벽한 데이트 코스를 만들어드릴게요! 💕<br><br>먼저 데이트 희망 지역을 알려주세요.<br>(예: 홍대, 강남, 명동, 부산 해운대 등)
+        안녕하세요! 어디로 놀러 가고 싶으신가요? 🎯<br><br>지역이나 특정 위치를 말해주세요!<br>(예: 야외음악당, 홍대, 강남역, 부산 해운대 등)
     </div>
     <div class="message-time">방금 전</div>
 </div>
@@ -728,11 +828,11 @@ async function sendMessage() {
     input.value = '';
     
     // 로딩 표시
-    const loadingMessage = addMessage("생각하는 중...", 'ai', true);
+    const loadingMessage = addMessage("검색 중...", 'ai', true);
     
     try {
-        // 채팅 기반 코스 생성 처리
-        const response = await chatCourseGenerator.processUserInput(message);
+        // 위치 검색 처리
+        const response = await locationSearchHandler.processUserInput(message);
         
         // 로딩 메시지 제거
         if (loadingMessage && loadingMessage.parentNode) {
@@ -982,6 +1082,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 </script>
 <script src="js/search-map.js"></script>
-<script src="js/chat-course-generator.js"></script>
+<script src="js/location-search-handler.js"></script>
 </body>
 </html>
