@@ -1,3 +1,10 @@
+console.log('📝 요청 데이터:', {
+    location,
+    category,
+    keyword,
+    size,
+    apiKeyLength: KAKAO_API_KEY ? KAKAO_API_KEY.length : 0
+});
 // api/search-kakao-places.js
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
