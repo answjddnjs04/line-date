@@ -42,11 +42,11 @@ async searchPlaces(keyword) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            location: '전국',
-            keyword: keyword,
-            category: '',
-            size: 15
-        })
+    location: '전국',
+    keyword: keyword,
+    category: null, // 빈 문자열 대신 null 사용
+    size: 15
+})
     });
 
     if (!response.ok) {
