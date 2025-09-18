@@ -73,7 +73,7 @@
             height: 100vh;
             background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
             position: relative;
-            z-index: 5;
+            z-index: 50;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -170,25 +170,25 @@
         }
 
         .toggle-btn {
-            width: 23px;
-            height: 46px;
-            background: white;
-            border: 1px solid #e8ecf4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 16px;
-            color: #667eea;
-            position: absolute;
-            right: -23px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 15;
-            border-radius: 0 8px 8px 0;
-            transition: all 0.3s ease;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
+    width: 23px;
+    height: 46px;
+    background: white;
+    border: 1px solid #e8ecf4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #667eea;
+    position: absolute;
+    right: -23px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    border-radius: 0 8px 8px 0;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
 
         .toggle-btn:hover {
             background: #f8f9ff;
@@ -208,7 +208,7 @@
     left: -327px;
     top: 0;
     transition: left 0.3s ease;
-    z-index: 7;
+    z-index: 1000;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
 }
 
@@ -305,7 +305,7 @@
     justify-content: center;
     font-weight: bold;
     font-size: 12px;
-    z-index: 20;
+    z-index: 100;
     transform: translate(-50%, -50%);
     border: 2px solid white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
@@ -408,7 +408,7 @@
     background: white;
     border-top: 2px solid #e8ecf4;
     box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
-    z-index: 999; /* 사이드바보다 낮은 z-index */
+    z-index: 500;
     transition: bottom 0.3s ease;
 }
 
@@ -653,7 +653,7 @@
     right: -337px;
     top: 0;
     transition: right 0.3s ease;
-    z-index: 8;
+    z-index: 1000;
     box-shadow: -2px 0 10px rgba(0,0,0,0.1);
 }
 
@@ -710,7 +710,7 @@
     left: -23px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 15;
+    z-index: 1000;
     border-radius: 8px 0 0 8px;
     transition: all 0.3s ease;
     box-shadow: -2px 0 5px rgba(0,0,0,0.1);
