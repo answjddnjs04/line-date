@@ -22,19 +22,33 @@ export default async function handler(req, res) {
   try {
     const { location, category, keyword, size = 5 } = req.body;
     
-    // 카카오 로컬 API 검색
-    const searchQuery = `${keyword} ${location}`;
-    const searchUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(searchQuery)}&category_group_code=${category}&size=${size}&sort=accuracy`;
+    // 카카오 로컬 API 검색 - 카테고리 파라미터 수정
+const searchQuery = `${keyword} ${location}`;
+let searchUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(searchQuery)}&size=${size}&sort=accuracy`;
+
+// 카테고리가 있을 때만 추가 (빈 문자열일 때 400 오류 발생 가능)
+if (category && category.trim() !== '') {
+    searchUrl += `&category_group_code=${category}`;
+}
+
+console.log('🔍 요청 URL:', searchUrl);
     
     const response = await fetch(searchUrl, {
-      headers: {
-        'Authorization': `KakaoAK ${KAKAO_API_KEY}`
-      }
-    });
+  headers: {
+    'Authorization': `KakaoAK ${KAKAO_API_KEY}`,
+    'Content-Type': 'application/json'
+  }
+});
 
-    if (!response.ok) {
-      throw new Error(`Kakao API 호출 실패: ${response.status}`);
-    }
+if (!response.ok) {
+  const errorText = await response.text();
+  console.error('❌ 카카오 API 응답:', {
+    status: response.status,
+    statusText: response.statusText,
+    error: errorText
+  });
+  throw new Error(`Kakao API 호출 실패: ${response.status} - ${errorText}`);
+}
 
     const data = await response.json();
     
