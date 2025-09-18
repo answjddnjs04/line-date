@@ -240,6 +240,9 @@ selectLocation(index) {
         bottomBar.classList.remove('show');
     }
 
+    // 기존 A,B,C 마커들 모두 제거
+    this.clearMarkers();
+
     // 세부 코스 제목 업데이트
     const detailCourseHeader = document.querySelector('.detail-course-header h3');
     if (detailCourseHeader) {
@@ -254,19 +257,53 @@ selectLocation(index) {
         detailCourseBox.classList.add('active');
     }
 
-    // 선택된 장소로 지도 이동
-    if (searchMapInstance && searchMapInstance.map) {
-        const position = new kakao.maps.LatLng(
-            selectedPlace.coordinates.lat,
-            selectedPlace.coordinates.lng
-        );
-        searchMapInstance.map.setCenter(position);
-        searchMapInstance.map.setLevel(2);
-    }
+    // 대표 위치 마커 생성
+    this.createRepresentativeMarker(selectedPlace);
 
     // 채팅에 선택 결과 추가
     const message = `'${selectedPlace.name}'을(를) 선택하셨습니다!\n📍 ${selectedPlace.address}\n\n이 장소 주변으로 데이트 코스를 계획해드릴까요? 원하시는 활동이나 분위기를 알려주세요!`;
     addMessage(message, 'ai');
+}
+
+// 대표 위치 마커 생성
+createRepresentativeMarker(place) {
+    if (!searchMapInstance || !searchMapInstance.map) return;
+
+    const position = new kakao.maps.LatLng(place.coordinates.lat, place.coordinates.lng);
+    
+    // 대표 위치 아이콘 생성
+    const markerContent = document.createElement('div');
+    markerContent.className = 'representative-marker';
+    markerContent.style.cssText = `
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 18px;
+        border: 3px solid white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        cursor: pointer;
+        position: relative;
+    `;
+    markerContent.innerHTML = '📍';
+
+    const customOverlay = new kakao.maps.CustomOverlay({
+        position: position,
+        content: markerContent,
+        yAnchor: 0.5
+    });
+
+    customOverlay.setMap(searchMapInstance.map);
+    this.markers.push(customOverlay);
+
+    // 지도 중심 이동
+    searchMapInstance.map.setCenter(position);
+    searchMapInstance.map.setLevel(3);
 }
 
     // 응답 메시지 생성
