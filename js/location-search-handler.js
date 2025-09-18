@@ -230,30 +230,44 @@ async searchActualPlaces(keyword) {
     }
 
     // 장소 선택
-    selectLocation(index) {
-        const selectedPlace = this.searchResults[index];
-        this.selectedLocation = selectedPlace;
+selectLocation(index) {
+    const selectedPlace = this.searchResults[index];
+    this.selectedLocation = selectedPlace;
 
-        // 하단바 숨기기
-        const bottomBar = document.getElementById('bottomBar');
-        if (bottomBar) {
-            bottomBar.classList.remove('show');
-        }
-
-        // 선택된 장소로 지도 이동
-        if (searchMapInstance && searchMapInstance.map) {
-            const position = new kakao.maps.LatLng(
-                selectedPlace.coordinates.lat,
-                selectedPlace.coordinates.lng
-            );
-            searchMapInstance.map.setCenter(position);
-            searchMapInstance.map.setLevel(2);
-        }
-
-        // 채팅에 선택 결과 추가
-        const message = `'${selectedPlace.name}'을(를) 선택하셨습니다!\n📍 ${selectedPlace.address}\n\n이 장소 주변으로 데이트 코스를 계획해드릴까요? 원하시는 활동이나 분위기를 알려주세요!`;
-        addMessage(message, 'ai');
+    // 하단바 숨기기
+    const bottomBar = document.getElementById('bottomBar');
+    if (bottomBar) {
+        bottomBar.classList.remove('show');
     }
+
+    // 세부 코스 제목 업데이트
+    const detailCourseHeader = document.querySelector('.detail-course-header h3');
+    if (detailCourseHeader) {
+        detailCourseHeader.textContent = `대표 위치: ${selectedPlace.name}`;
+    }
+
+    // 우측 사이드바 활성화
+    const rightSidebar = document.getElementById('rightSidebar');
+    const detailCourseBox = document.getElementById('detailCourseBox');
+    if (rightSidebar && detailCourseBox) {
+        rightSidebar.classList.add('active');
+        detailCourseBox.classList.add('active');
+    }
+
+    // 선택된 장소로 지도 이동
+    if (searchMapInstance && searchMapInstance.map) {
+        const position = new kakao.maps.LatLng(
+            selectedPlace.coordinates.lat,
+            selectedPlace.coordinates.lng
+        );
+        searchMapInstance.map.setCenter(position);
+        searchMapInstance.map.setLevel(2);
+    }
+
+    // 채팅에 선택 결과 추가
+    const message = `'${selectedPlace.name}'을(를) 선택하셨습니다!\n📍 ${selectedPlace.address}\n\n이 장소 주변으로 데이트 코스를 계획해드릴까요? 원하시는 활동이나 분위기를 알려주세요!`;
+    addMessage(message, 'ai');
+}
 
     // 응답 메시지 생성
     generateResponseMessage(keyword, results) {
