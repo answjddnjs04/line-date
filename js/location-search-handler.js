@@ -35,18 +35,75 @@ class LocationSearchHandler {
     }
 
     // 백엔드 API로 장소 검색
+// 백엔드 API로 장소 검색
 async searchPlaces(keyword) {
+    // 지역명인지 판단
+    const regionKeywords = ['서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종', '홍대', '강남', '명동', '이태원', '신촌', '건대', '압구정', '가로수길'];
+    const isRegion = regionKeywords.some(region => keyword.includes(region));
+    
+    if (isRegion) {
+        // 지역명이면 혼합 검색 (지역 정보 + 실제 장소)
+        const [regionData, placeData] = await Promise.all([
+            this.searchRegionInfo(keyword),
+            this.searchActualPlaces(keyword)
+        ]);
+        
+        // 첫 번째는 지역 정보, 나머지는 실제 장소
+        return [regionData, ...placeData.slice(0, 2)].filter(Boolean);
+    } else {
+        // 구체적인 장소명이면 일반 검색
+        return await this.searchActualPlaces(keyword);
+    }
+}
+
+// 지역 정보 검색
+async searchRegionInfo(keyword) {
     const response = await fetch('/api/search-kakao-places', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-    location: '전국',
-    keyword: keyword,
-    category: null, // 빈 문자열 대신 null 사용
-    size: 15
-})
+            location: '',
+            keyword: keyword,
+            category: null,
+            size: 1,
+            isRegion: true
+        })
+    });
+
+    if (!response.ok) return null;
+    
+    const data = await response.json();
+    if (data.places.length === 0) return null;
+    
+    const place = data.places[0];
+    return {
+        name: `${keyword} 지역`,
+        category: '지역',
+        address: place.address,
+        phone: '',
+        url: place.url,
+        coordinates: {
+            lat: place.y,
+            lng: place.x
+        }
+    };
+}
+
+// 실제 장소 검색
+async searchActualPlaces(keyword) {
+    const response = await fetch('/api/search-kakao-places', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            location: '',
+            keyword: keyword,
+            category: null,
+            size: 15
+        })
     });
 
     if (!response.ok) {
