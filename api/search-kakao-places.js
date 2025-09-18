@@ -1,10 +1,3 @@
-console.log('📝 요청 데이터:', {
-    location,
-    category,
-    keyword,
-    size,
-    apiKeyLength: KAKAO_API_KEY ? KAKAO_API_KEY.length : 0
-});
 // api/search-kakao-places.js
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -28,6 +21,16 @@ export default async function handler(req, res) {
 
   try {
     const { location, category, keyword, size = 5 } = req.body;
+    
+    console.log('📝 요청 데이터:', {
+        location,
+        category,
+        keyword,
+        size,
+        apiKeyLength: KAKAO_API_KEY ? KAKAO_API_KEY.length : 0
+    });
+    
+    // 카카오 로컬 API 검색 - 카테고리 파라미터 수정
     
     // 카카오 로컬 API 검색 - 카테고리 파라미터 수정
 const searchQuery = `${keyword} ${location}`;
