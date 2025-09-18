@@ -34,48 +34,41 @@ class LocationSearchHandler {
         }
     }
 
-    // 카카오 API로 장소 검색
-    async searchPlaces(keyword) {
-        const KAKAO_API_KEY = await this.getKakaoApiKey();
-        
-        const searchUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(keyword)}&size=15&sort=accuracy`;
-        
-        const response = await fetch(searchUrl, {
-            headers: {
-                'Authorization': `KakaoAK ${KAKAO_API_KEY}`
-            }
-        });
+    // 백엔드 API로 장소 검색
+async searchPlaces(keyword) {
+    const response = await fetch('/api/search-kakao-places', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            location: '전국',
+            keyword: keyword,
+            category: '',
+            size: 15
+        })
+    });
 
-        if (!response.ok) {
-            throw new Error(`카카오 API 호출 실패: ${response.status}`);
-        }
-
-        const data = await response.json();
-        
-        return data.documents.map(place => ({
-            name: place.place_name,
-            category: place.category_name,
-            address: place.road_address_name || place.address_name,
-            phone: place.phone,
-            url: place.place_url,
-            coordinates: {
-                lat: parseFloat(place.y),
-                lng: parseFloat(place.x)
-            }
-        }));
+    if (!response.ok) {
+        throw new Error(`장소 검색 API 호출 실패: ${response.status}`);
     }
 
-    // 카카오 API 키 가져오기
-    async getKakaoApiKey() {
-        const response = await fetch('/api/get-kakao-key');
-        const data = await response.json();
-        
-        if (!data.success || !data.key) {
-            throw new Error('카카오 API 키를 가져올 수 없습니다.');
+    const data = await response.json();
+    
+    return data.places.map(place => ({
+        name: place.name,
+        category: place.category,
+        address: place.address,
+        phone: place.phone,
+        url: place.url,
+        coordinates: {
+            lat: place.y,
+            lng: place.x
         }
-        
-        return data.key;
-    }
+    }));
+}
+
+    
 
     // 하단바에 검색 결과 표시
     displayBottomBar() {
