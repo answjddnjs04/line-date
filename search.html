@@ -400,10 +400,9 @@
     30% { opacity: 0.4; }
 }
 
-/* 하단바 스타일 */
 .bottom-bar {
     position: fixed;
-    bottom: -200px;
+    bottom: -280px;
     left: 0;
     right: 0;
     background: white;
@@ -418,7 +417,7 @@
 }
 
 .bottom-bar-content {
-    padding: 20px;
+    padding: 25px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -441,16 +440,16 @@
 .location-option {
     display: flex;
     align-items: flex-start;
-    gap: 15px;
+    gap: 20px;
     background: white;
     border: 2px solid #e8ecf4;
-    border-radius: 15px;
-    padding: 15px;
-    min-width: 280px;
-    max-width: 320px;
+    border-radius: 18px;
+    padding: 20px;
+    min-width: 320px;
+    max-width: 380px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
 }
 
 .location-option:hover {
@@ -465,28 +464,29 @@
 }
 
 .location-image {
-    width: 80px;
-    height: 60px;
+    width: 120px;
+    height: 90px;
     object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+    border: 2px solid #f0f2ff;
 }
 
 .location-label {
     position: absolute;
-    top: -5px;
-    left: -5px;
-    width: 24px;
-    height: 24px;
+    top: -8px;
+    left: -8px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-weight: bold;
-    font-size: 0.9rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    border: 2px solid white;
+    font-size: 1rem;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    border: 3px solid white;
 }
 
 .location-info {
