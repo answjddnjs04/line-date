@@ -128,7 +128,7 @@ async searchActualPlaces(keyword) {
     
 
     // 하단바에 검색 결과 표시
-    displayBottomBar() {
+    async displayBottomBar() {
         let bottomBar = document.getElementById('bottomBar');
         
         if (!bottomBar) {
@@ -142,15 +142,24 @@ async searchActualPlaces(keyword) {
         const labels = ['A', 'B', 'C'];
         const colors = ['#FF4444', '#4444FF', '#44AA44'];
         
+        // 각 장소의 이미지 URL 가져오기
+        const placeImages = await Promise.all(
+            this.searchResults.map(place => this.getPlaceImage(place.name))
+        );
+        
         bottomBar.innerHTML = `
             <div class="bottom-bar-content">
                 <div class="bottom-bar-title">검색된 장소를 선택하세요:</div>
                 <div class="location-options">
                     ${this.searchResults.map((place, index) => `
                         <div class="location-option" onclick="locationSearchHandler.selectLocation(${index})" data-index="${index}">
-                            <div class="location-label" style="background-color: ${colors[index]}">${labels[index]}</div>
+                            <div class="location-image-container">
+                                <img src="${placeImages[index]}" alt="${place.name}" class="location-image" />
+                                <div class="location-label" style="background-color: ${colors[index]}">${labels[index]}</div>
+                            </div>
                             <div class="location-info">
                                 <div class="location-name">${place.name}</div>
+                                <div class="location-category">${place.category}</div>
                                 <div class="location-address">${place.address}</div>
                             </div>
                         </div>
@@ -160,6 +169,22 @@ async searchActualPlaces(keyword) {
         `;
 
         bottomBar.classList.add('show');
+    }
+
+    // 장소 이미지 가져오기
+    async getPlaceImage(placeName) {
+        try {
+            const response = await fetch(`/api/get-place-image?placeName=${encodeURIComponent(placeName)}`);
+            if (response.ok) {
+                const data = await response.json();
+                return data.imageUrl;
+            }
+        } catch (error) {
+            console.warn('이미지 로드 실패:', error);
+        }
+        
+        // 기본 이미지 반환
+        return 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop';
     }
 
     // 지도에 마커 표시
