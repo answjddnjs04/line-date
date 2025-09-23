@@ -382,9 +382,26 @@ createRepresentativeMarker(place) {
     customOverlay.setMap(searchMapInstance.map);
     this.markers.push(customOverlay);
 
-    // 지도 중심 이동
-    searchMapInstance.map.setCenter(position);
-    searchMapInstance.map.setLevel(3);
+    // 하단바를 고려한 정중앙 배치
+    const mapContainer = document.getElementById('searchMap');
+    const mapHeight = mapContainer.offsetHeight;
+    const bottomBarHeight = 300; // 하단바 높이
+    
+    // 하단바를 제외한 가용 영역의 중앙 계산
+    const availableHeight = mapHeight - bottomBarHeight;
+    const offsetPixels = bottomBarHeight / 2; // 하단바 높이의 절반만큼 위로 이동
+    
+    // 1km 반경이 보이는 지도 레벨 (레벨 6이 약 1km 반경)
+    searchMapInstance.map.setLevel(6);
+    
+    // 지도 중심을 하단바를 고려해서 조정
+    setTimeout(() => {
+        const projection = searchMapInstance.map.getProjection();
+        const point = projection.pointFromCoords(position);
+        point.y -= offsetPixels; // 하단바 높이 절반만큼 위로 이동
+        const adjustedCenter = projection.coordsFromPoint(point);
+        searchMapInstance.map.setCenter(adjustedCenter);
+    }, 100);
 }
 
     // 응답 메시지 생성
