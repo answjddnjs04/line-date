@@ -440,49 +440,100 @@
 
 .location-option {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 15px;
-    background: #f8f9ff;
+    background: white;
     border: 2px solid #e8ecf4;
     border-radius: 15px;
     padding: 15px;
-    min-width: 250px;
+    min-width: 280px;
+    max-width: 320px;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .location-option:hover {
     border-color: #667eea;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.location-image-container {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.location-image {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .location-label {
-    width: 40px;
-    height: 40px;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-weight: bold;
-    font-size: 1.2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    font-size: 0.9rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    border: 2px solid white;
 }
 
 .location-info {
     flex: 1;
+    min-width: 0;
 }
 
 .location-name {
     font-weight: 600;
     color: #2c3e50;
     margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.location-category {
+    font-size: 0.85rem;
+    color: #667eea;
+    margin-bottom: 5px;
+    font-weight: 500;
 }
 
 .location-address {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #6c7b8a;
+    line-height: 1.4;
+}
+
+.bottom-bar {
+    position: fixed;
+    bottom: -300px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid #e8ecf4;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    z-index: 500;
+    transition: bottom 0.3s ease;
+}
+
+.bottom-bar.show {
+    bottom: 0;
+}
+
+.bottom-bar-content {
+    padding: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .custom-marker {
