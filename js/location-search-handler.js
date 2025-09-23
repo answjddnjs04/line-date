@@ -172,20 +172,23 @@ async searchActualPlaces(keyword) {
     }
 
     // 장소 이미지 가져오기
-    async getPlaceImage(placeName) {
-        try {
-            const response = await fetch(`/api/get-place-image?placeName=${encodeURIComponent(placeName)}`);
-            if (response.ok) {
-                const data = await response.json();
-                return data.imageUrl;
-            }
-        } catch (error) {
-            console.warn('이미지 로드 실패:', error);
-        }
-        
-        // 기본 이미지 반환
-        return 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop';
-    }
+    
+async getPlaceImage(placeName) {
+    // 플레이스 홀더 이미지 배열
+    const placeholderImages = [
+        'https://via.placeholder.com/120x90/667eea/ffffff?text=Place+1',
+        'https://via.placeholder.com/120x90/764ba2/ffffff?text=Place+2', 
+        'https://via.placeholder.com/120x90/f093fb/ffffff?text=Place+3'
+    ];
+    
+    // 장소명 해시값을 기반으로 이미지 선택
+    const hash = placeName.split('').reduce((a, b) => {
+        a = ((a << 5) - a) + b.charCodeAt(0);
+        return a & a;
+    }, 0);
+    
+    return placeholderImages[Math.abs(hash) % placeholderImages.length];
+}
 
     // 지도에 마커 표시
     displayMarkersOnMap() {
