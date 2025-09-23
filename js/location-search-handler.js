@@ -330,13 +330,24 @@ selectLocation(index) {
         detailCourseHeader.textContent = `대표 위치: ${selectedPlace.name}`;
     }
 
-    // 우측 사이드바 활성화
-    const rightSidebar = document.getElementById('rightSidebar');
-    const detailCourseBox = document.getElementById('detailCourseBox');
-    if (rightSidebar && detailCourseBox) {
-        rightSidebar.classList.add('active');
-        detailCourseBox.classList.add('active');
+    // 우측 사이드바 활성화 및 장소 확인 인터페이스 표시
+const rightSidebar = document.getElementById('rightSidebar');
+const detailCourseBox = document.getElementById('detailCourseBox');
+const detailCourseContent = document.getElementById('detailCourseContent');
+
+if (rightSidebar && detailCourseBox && detailCourseContent) {
+    rightSidebar.classList.add('active');
+    detailCourseBox.classList.add('active');
+    
+    // 세부 코스 헤더 업데이트
+    const detailCourseHeader = document.querySelector('.detail-course-header h3');
+    if (detailCourseHeader) {
+        detailCourseHeader.textContent = `선택된 위치 확인`;
     }
+    
+    // 장소 확인 인터페이스 생성
+    this.displayPlaceConfirmation(selectedPlace, detailCourseContent);
+}
 
     // 대표 위치 마커 생성
     this.createRepresentativeMarker(selectedPlace);
@@ -422,6 +433,78 @@ createRepresentativeMarker(place) {
         });
         this.markers = [];
     }
+
+    // 장소 확인 인터페이스 표시
+async displayPlaceConfirmation(place, container) {
+    const placeImage = await this.getPlaceImage(place.name);
+    
+    container.innerHTML = `
+        <div class="place-confirmation">
+            <div class="confirmation-question" id="confirmationQuestion">
+                이 위치를 실제로 방문하실건가요?
+            </div>
+            
+            <div class="selected-location-block" id="selectedLocationBlock">
+                <div class="location-image-container">
+                    <img src="${placeImage}" alt="${place.name}" class="location-image" />
+                </div>
+                <div class="location-info">
+                    <div class="location-name">${place.name}</div>
+                    <div class="location-address">${place.address}</div>
+                </div>
+            </div>
+            
+            <div class="confirmation-buttons" id="confirmationButtons">
+                <button class="confirm-btn check-btn" onclick="locationSearchHandler.confirmPlace(true)">
+                    ✓ 네, 방문할게요
+                </button>
+                <button class="confirm-btn cancel-btn" onclick="locationSearchHandler.confirmPlace(false)">
+                    ✗ 아니요
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// 장소 확인 처리
+confirmPlace(isConfirmed) {
+    const confirmationQuestion = document.getElementById('confirmationQuestion');
+    const confirmationButtons = document.getElementById('confirmationButtons');
+    const selectedLocationBlock = document.getElementById('selectedLocationBlock');
+    
+    if (isConfirmed) {
+        // 체크 버튼을 누른 경우 - 질문과 버튼만 제거
+        if (confirmationQuestion) confirmationQuestion.remove();
+        if (confirmationButtons) confirmationButtons.remove();
+        
+        // 채팅에 확인 메시지 추가
+        const message = `장소 확인이 완료되었습니다! 이제 이 위치를 기준으로 데이트 코스를 계획해드릴게요. 원하시는 활동이나 분위기를 알려주세요!`;
+        addMessage(message, 'ai');
+    } else {
+        // 엑스 버튼을 누른 경우 - 모든 요소 제거
+        if (confirmationQuestion) confirmationQuestion.remove();
+        if (confirmationButtons) confirmationButtons.remove();
+        if (selectedLocationBlock) selectedLocationBlock.remove();
+        
+        // 기본 메시지로 복원
+        const detailCourseContent = document.getElementById('detailCourseContent');
+        if (detailCourseContent) {
+            detailCourseContent.innerHTML = `
+                <div class="no-course-message">
+                    다른 위치를 선택해주세요.<br>
+                    AI 채팅에서 새로운 장소를 검색해보세요!
+                </div>
+            `;
+        }
+        
+        // 채팅에 취소 메시지 추가
+        const message = `장소 선택이 취소되었습니다. 다른 위치를 검색해주세요!`;
+        addMessage(message, 'ai');
+        
+        // 대표 마커도 제거
+        this.clearMarkers();
+    }
+}
 
     // 초기화 메시지
     getInitialMessage() {
