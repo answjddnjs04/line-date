@@ -128,48 +128,79 @@ async searchActualPlaces(keyword) {
     
 
     // 하단바에 검색 결과 표시
-    async displayBottomBar() {
-        let bottomBar = document.getElementById('bottomBar');
-        
-        if (!bottomBar) {
-            // 하단바 생성
-            bottomBar = document.createElement('div');
-            bottomBar.id = 'bottomBar';
-            bottomBar.className = 'bottom-bar';
-            document.body.appendChild(bottomBar);
-        }
-
-        const labels = ['A', 'B', 'C'];
-        const colors = ['#FF4444', '#4444FF', '#44AA44'];
-        
-        // 각 장소의 이미지 URL 가져오기
-        const placeImages = await Promise.all(
-            this.searchResults.map(place => this.getPlaceImage(place.name))
-        );
-        
-        bottomBar.innerHTML = `
-            <div class="bottom-bar-content">
-                <div class="bottom-bar-title">검색된 장소를 선택하세요:</div>
-                <div class="location-options">
-                    ${this.searchResults.map((place, index) => `
-                        <div class="location-option" onclick="locationSearchHandler.selectLocation(${index})" data-index="${index}">
-                            <div class="location-image-container">
-                                <img src="${placeImages[index]}" alt="${place.name}" class="location-image" />
-                                <div class="location-label" style="background-color: ${colors[index]}">${labels[index]}</div>
-                            </div>
-                            <div class="location-info">
-                                <div class="location-name">${place.name}</div>
-                                <div class="location-category">${place.category}</div>
-                                <div class="location-address">${place.address}</div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-
-        bottomBar.classList.add('show');
+async displayBottomBar() {
+    let bottomBar = document.getElementById('bottomBar');
+    
+    if (!bottomBar) {
+        // 하단바 생성
+        bottomBar = document.createElement('div');
+        bottomBar.id = 'bottomBar';
+        bottomBar.className = 'bottom-bar';
+        document.body.appendChild(bottomBar);
     }
+
+    const labels = ['A', 'B', 'C'];
+    const colors = ['#FF4444', '#4444FF', '#44AA44'];
+    
+    // 각 장소의 이미지 URL 가져오기
+    const placeImages = await Promise.all(
+        this.searchResults.map(place => this.getPlaceImage(place.name))
+    );
+    
+    bottomBar.innerHTML = `
+        <div class="bottom-bar-content">
+            <div class="bottom-bar-title">아래 장소를 클릭하면 카카오맵으로 넘어갑니다</div>
+            <div class="location-options">
+                ${this.searchResults.map((place, index) => `
+                    <div class="location-option" onclick="window.open('${place.url}', '_blank')" data-index="${index}">
+                        <div class="location-image-container">
+                            <img src="${placeImages[index]}" alt="${place.name}" class="location-image" />
+                            <div class="location-label" style="background-color: ${colors[index]}">${labels[index]}</div>
+                        </div>
+                        <div class="location-info">
+                            <div class="location-name">${place.name}</div>
+                            <div class="location-address">${place.address}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    bottomBar.classList.add('show');
+    
+    // 채팅창에 선택 버튼 추가
+    this.addSelectionButtons();
+}
+
+// 채팅창에 A,B,C 선택 버튼 추가
+addSelectionButtons() {
+    const labels = ['A', 'B', 'C'];
+    const colors = ['#FF4444', '#4444FF', '#44AA44'];
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'selection-buttons';
+    buttonContainer.innerHTML = `
+        <div class="selection-message">원하는 장소를 선택해주세요:</div>
+        <div class="button-row">
+            ${this.searchResults.map((place, index) => `
+                <button class="selection-btn" 
+                        style="background-color: ${colors[index]}" 
+                        onclick="locationSearchHandler.selectLocation(${index})">
+                    ${labels[index]}
+                </button>
+            `).join('')}
+        </div>
+    `;
+    
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message ai-message selection-message-container';
+    messageDiv.appendChild(buttonContainer);
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
 
     // 장소 이미지 가져오기
     
