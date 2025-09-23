@@ -456,11 +456,11 @@ async displayPlaceConfirmation(place, container) {
             
             <div class="confirmation-buttons" id="confirmationButtons">
                 <button class="confirm-btn check-btn" onclick="locationSearchHandler.confirmPlace(true)">
-                    ✓ 네, 방문할게요
-                </button>
-                <button class="confirm-btn cancel-btn" onclick="locationSearchHandler.confirmPlace(false)">
-                    ✗ 아니요
-                </button>
+    ✓
+</button>
+<button class="confirm-btn cancel-btn" onclick="locationSearchHandler.confirmPlace(false)">
+    ✗
+</button>
             </div>
         </div>
     `;
