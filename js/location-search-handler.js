@@ -870,5 +870,5 @@ getInitialMessage() {
     }
 }
 
-// 전역 인스턴스
-const locationSearchHandler = new LocationSearchHandler();
+// 전역 인스턴스 - search.html에서 초기화하므로 여기서는 제거
+// const locationSearchHandler = new LocationSearchHandler();
