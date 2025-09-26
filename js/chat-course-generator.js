@@ -146,15 +146,33 @@ class ChatCourseGenerator {
             </div>
 
             <div class="detailed-courses">
-                ${courseData.courses.map((course, index) => `
-                    <div class="detailed-course-item" style="
-                        background: white; 
-                        border: 2px solid #e8ecf4; 
-                        border-radius: 15px; 
-                        padding: 20px; 
-                        margin-bottom: 20px;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                    ">
+    ${courseData.courses.map((course, index) => `
+        <div class="detailed-course-item" style="
+            background: white; 
+            border: 2px solid #e8ecf4; 
+            border-radius: 15px; 
+            padding: 20px; 
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        ">
+            <div style="
+                position: absolute;
+                top: 15px;
+                left: 15px;
+                background: #667eea;
+                color: white;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 1.1rem;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                z-index: 10;
+            ">${index + 1}</div>
                         <div style="
                             background: #667eea; 
                             color: white; 
