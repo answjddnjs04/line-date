@@ -7,6 +7,31 @@ class CourseManager {
         this.maxCourses = 6; // 최대 코스 개수
     }
 
+    // 빈 슬롯 추가 (나중에 실제 장소로 대체될 임시 슬롯)
+    addEmptySlot(number) {
+        const emptyPlace = {
+            name: `${number}번 코스`,
+            address: '장소를 선택해주세요',
+            phone: '',
+            url: '',
+            coordinates: { lat: 0, lng: 0 },
+            isEmpty: true
+        };
+        
+        this.courses.set(number, emptyPlace);
+        this.updateMinMax();
+        console.log(`빈 슬롯 ${number}번 추가`);
+    }
+    
+    // 최소/최대 번호 업데이트
+    updateMinMax() {
+        const numbers = Array.from(this.courses.keys());
+        if (numbers.length > 0) {
+            this.minNumber = Math.min(...numbers);
+            this.maxNumber = Math.max(...numbers);
+        }
+    }
+
     // 장소 추가
     addPlace(number, place) {
         this.courses.set(number, place);
