@@ -1029,9 +1029,11 @@ async function sendMessage() {
     
     if (!message) return;
     
-    // locationSearchHandler가 초기화되지 않았으면 초기화
-    if (!locationSearchHandler) {
-        locationSearchHandler = new LocationSearchHandler();
+    // locationSearchHandler 존재 확인
+    if (!window.locationSearchHandler) {
+        console.error('❌ LocationSearchHandler가 초기화되지 않았습니다.');
+        addMessage('시스템이 준비되지 않았습니다. 잠시 후 다시 시도해주세요.', 'ai');
+        return;
     }
     
     // 사용자 메시지 추가
@@ -1043,7 +1045,7 @@ async function sendMessage() {
     
     try {
         // 위치 검색 처리
-        const response = await locationSearchHandler.processUserInput(message);
+        const response = await window.locationSearchHandler.processUserInput(message);
         
         // 로딩 메시지 제거
         if (loadingMessage && loadingMessage.parentNode) {
@@ -1295,5 +1297,25 @@ document.addEventListener('DOMContentLoaded', async function() {
 <script src="js/search-map.js"></script>
 <script src="js/course-manager.js"></script>
 <script src="js/location-search-handler.js"></script>
+<script>
+// 스크립트 로딩 확인 및 초기화
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔍 스크립트 로딩 상태 확인');
+    console.log('LocationSearchHandler:', typeof LocationSearchHandler);
+    console.log('CourseManager:', typeof CourseManager);
+    console.log('SearchMap:', typeof SearchMap);
+    
+    // LocationSearchHandler가 정의되지 않은 경우 에러 처리
+    if (typeof LocationSearchHandler === 'undefined') {
+        console.error('❌ LocationSearchHandler 클래스를 찾을 수 없습니다.');
+        addMessage('시스템 초기화 중 오류가 발생했습니다. 페이지를 새로고침해주세요.', 'ai');
+        return;
+    }
+    
+    // 전역 변수로 초기화
+    window.locationSearchHandler = new LocationSearchHandler();
+    console.log('✅ LocationSearchHandler 초기화 완료');
+});
+</script>
 </body>
 </html>
