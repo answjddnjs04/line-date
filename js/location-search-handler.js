@@ -7,17 +7,13 @@ class LocationSearchHandler {
     }
 
     // 사용자 입력 처리
-    async processUserInput(message) {
-        try {
-            // 카카오 API로 장소 검색
-            const places = await this.searchPlaces(message);
-            
-            if (places.length === 0) {
-                return `'${message}'에 대한 검색 결과가 없습니다. 다른 장소명을 입력해주세요.`;
-            }
-
-            // 최대 3개까지만 표시
-            this.searchResults = places.slice(0, 3);
+processUserInput(message) {
+    try {
+        // AI 기반 자연어 처리로 장소 검색
+        const aiResult = await this.searchWithAI(message);
+        
+        if (aiResult.success && aiResult.places.length > 0) {
+            this.searchResults = aiResult.places;
             
             // 하단바에 결과 표시
             this.displayBottomBar();
@@ -25,18 +21,23 @@ class LocationSearchHandler {
             // 지도에 마커 표시
             this.displayMarkersOnMap();
             
-            // 응답 메시지 생성
-            return this.generateResponseMessage(message, this.searchResults);
-            
-        } catch (error) {
-            console.error('장소 검색 오류:', error);
-            return '장소 검색 중 오류가 발생했습니다. 다시 시도해주세요.';
+            // AI 응답 메시지 반환
+            return aiResult.aiResponse;
+        } else {
+            // AI 검색 실패 시 기존 방식으로 폴백
+            return await this.fallbackSearch(message);
         }
+        
+    } catch (error) {
+        console.error('AI 장소 검색 오류:', error);
+        // 오류 시 기존 방식으로 폴백
+        return await this.fallbackSearch(message);
     }
+}
 
     // 백엔드 API로 장소 검색
 // 백엔드 API로 장소 검색
-async searchPlaces(keyword) {
+searchPlaces(keyword) {
     // 지역명인지 판단
     const regionKeywords = ['서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종', '홍대', '강남', '명동', '이태원', '신촌', '건대', '압구정', '가로수길'];
     const isRegion = regionKeywords.some(region => keyword.includes(region));
@@ -91,6 +92,39 @@ async searchRegionInfo(keyword) {
     };
 }
 
+// AI 기반 장소 검색
+async searchWithAI(message) {
+    const response = await fetch('/api/ai-place-search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            userMessage: message
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error(`AI 검색 API 호출 실패: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+// 기존 방식 폴백 검색
+async fallbackSearch(message) {
+    const places = await this.searchPlaces(message);
+    
+    if (places.length === 0) {
+        return `'${message}'에 대한 검색 결과가 없습니다. 다른 장소명을 입력해주세요.`;
+    }
+
+    this.searchResults = places.slice(0, 3);
+    this.displayBottomBar();
+    this.displayMarkersOnMap();
+    
+    return this.generateResponseMessage(message, this.searchResults);
+}
 // 실제 장소 검색
 async searchActualPlaces(keyword) {
     const response = await fetch('/api/search-kakao-places', {
