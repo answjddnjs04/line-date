@@ -570,6 +570,23 @@ async displayPlaceConfirmation(place, container) {
             <div class="selected-location-block" id="selectedLocationBlock" onclick="window.open('${place.url}', '_blank')" style="cursor: pointer;">
                 <div class="location-image-container">
                     <img src="${placeImage}" alt="${place.name}" class="location-image" />
+                    <div class="location-number-badge" style="
+                        position: absolute;
+                        top: -8px;
+                        left: -8px;
+                        width: 28px;
+                        height: 28px;
+                        background: #FF4444;
+                        color: white;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        font-size: 1rem;
+                        box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+                        border: 3px solid white;
+                    ">1</div>
                 </div>
                 <div class="location-info">
                     <div class="location-name">${place.name}</div>
@@ -600,8 +617,17 @@ confirmPlace(isConfirmed) {
         if (confirmationQuestion) confirmationQuestion.remove();
         if (confirmationButtons) confirmationButtons.remove();
         
+        // 코스 관리 시스템 초기화
+        if (!this.courseManager) {
+            this.courseManager = new CourseManager();
+        }
+        this.courseManager.addPlace(1, this.selectedLocation);
+        
+        // 채팅에 코스 확장 인터페이스 추가
+        this.addCourseExpansionInterface();
+        
         // 채팅에 확인 메시지 추가
-        const message = `장소 확인이 완료되었습니다! 이제 이 위치를 기준으로 데이트 코스를 계획해드릴게요. 원하시는 활동이나 분위기를 알려주세요!`;
+        const message = `1번 장소가 설정되었습니다! 위의 + 버튼을 눌러 코스를 확장해보세요!`;
         addMessage(message, 'ai');
     } else {
         // 엑스 버튼을 누른 경우 - 모든 요소 제거
@@ -627,6 +653,84 @@ confirmPlace(isConfirmed) {
         // 대표 마커도 제거
         this.clearMarkers();
     }
+}
+
+// 코스 확장 인터페이스 추가
+addCourseExpansionInterface() {
+    const messagesContainer = document.getElementById('chatMessages');
+    const interfaceDiv = document.createElement('div');
+    interfaceDiv.className = 'message ai-message course-expansion-container';
+    interfaceDiv.id = 'courseExpansionInterface';
+    
+    interfaceDiv.innerHTML = `
+        <div class="message-content">
+            <div class="course-expansion-interface" style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                padding: 20px;
+                background: #f8f9ff;
+                border-radius: 12px;
+                margin: 10px 0;
+            ">
+                <button class="course-add-btn" onclick="locationSearchHandler.addCourseSlot('left')" style="
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    border: none;
+                    background: #bdc3c7;
+                    color: white;
+                    font-size: 20px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                ">+</button>
+                
+                <div class="current-course-indicator" style="
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    background: #FF4444;
+                    color: white;
+                    font-size: 24px;
+                    font-weight: bold;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 4px 12px rgba(255,68,68,0.3);
+                ">1</div>
+                
+                <button class="course-add-btn" onclick="locationSearchHandler.addCourseSlot('right')" style="
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    border: none;
+                    background: #bdc3c7;
+                    color: white;
+                    font-size: 20px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                ">+</button>
+            </div>
+        </div>
+    `;
+    
+    messagesContainer.appendChild(interfaceDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// 코스 슬롯 추가
+addCourseSlot(direction) {
+    if (!this.courseManager) return;
+    
+    const newNumber = this.courseManager.getNextSlotNumber(direction);
+    if (newNumber === null) {
+        addMessage('최대 6개의 코스까지만 추가할 수 있습니다!', 'ai');
+        return;
+    }
+    
+    addMessage(`${newNumber}번 코스를 추가합니다. 어떤 장소를 원하시나요?`, 'ai');
+    // TODO: 장소 검색 모드로 전환
 }
 
     // 초기화 메시지
