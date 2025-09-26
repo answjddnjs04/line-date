@@ -42,23 +42,94 @@ async processUserInput(message) {
 }
 
     // 백엔드 API로 장소 검색
+// 백엔드 API로 장소 검색
 async searchPlaces(keyword) {
     // 지역명인지 판단
     const regionKeywords = ['서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종', '홍대', '강남', '명동', '이태원', '신촌', '건대', '압구정', '가로수길'];
     const isRegion = regionKeywords.some(region => keyword.includes(region));
     
     if (isRegion) {
-        // 지역명이면 혼합 검색 (지역 정보 + 실제 장소)
-        const [regionData, placeData] = await Promise.all([
-            this.searchRegionInfo(keyword),
-            this.searchActualPlaces(keyword)
+        // 지역명이면 A번은 지역 정보, B,C번은 실제 장소
+        const [regionInfo, actualPlaces] = await Promise.all([
+            this.createRegionInfo(keyword),
+            this.searchRegionPlaces(keyword)
         ]);
         
-        // 첫 번째는 지역 정보, 나머지는 실제 장소
-        return [regionData, ...placeData.slice(0, 2)].filter(Boolean);
+        return [regionInfo, ...actualPlaces.slice(0, 2)].filter(Boolean);
     } else {
         // 구체적인 장소명이면 일반 검색
         return await this.searchActualPlaces(keyword);
+    }
+}
+
+// 지역 정보 생성 (실제 위치가 아닌 지역 대표 정보)
+async createRegionInfo(regionName) {
+    // 지역 대표 좌표 (대구 중심가 예시)
+    const regionCoords = {
+        '대구': { lat: 35.8714, lng: 128.6014, center: '대구 중심가' },
+        '서울': { lat: 37.5665, lng: 126.9780, center: '서울 중심가' },
+        '부산': { lat: 35.1796, lng: 129.0756, center: '부산 중심가' },
+        '홍대': { lat: 37.5563, lng: 126.9226, center: '홍대 중심가' }
+    };
+    
+    const coords = regionCoords[regionName] || { lat: 37.5665, lng: 126.9780, center: `${regionName} 중심가` };
+    
+    return {
+        name: `${regionName} 지역`,
+        category: '지역 선택',
+        address: coords.center,
+        phone: '',
+        url: `https://map.kakao.com/link/map/${regionName},${coords.lat},${coords.lng}`,
+        coordinates: {
+            lat: coords.lat,
+            lng: coords.lng
+        }
+    };
+}
+
+// 지역 내 실제 장소 검색
+async searchRegionPlaces(regionName) {
+    try {
+        // 지역명 + 인기 장소 키워드로 검색
+        const keywords = ['공원', '카페', '맛집'];
+        const allPlaces = [];
+        
+        for (const keyword of keywords) {
+            const response = await fetch('/api/search-kakao-places', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    location: '',
+                    keyword: `${regionName} ${keyword}`,
+                    category: null,
+                    size: 5
+                })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const places = data.places.map(place => ({
+                    name: place.name,
+                    category: place.category,
+                    address: place.address,
+                    phone: place.phone,
+                    url: place.url,
+                    coordinates: {
+                        lat: parseFloat(place.y),
+                        lng: parseFloat(place.x)
+                    }
+                }));
+                allPlaces.push(...places);
+            }
+        }
+        
+        // 중복 제거 후 상위 5개 반환
+        return this.removeDuplicatePlaces(allPlaces).slice(0, 5);
+    } catch (error) {
+        console.warn('지역 장소 검색 실패:', error);
+        return [];
     }
 }
 
@@ -164,7 +235,7 @@ async searchActualPlaces(keyword) {
         },
         body: JSON.stringify({
             location: '',
-            keyword: keyword,
+            keyword: keyword, // "전국" 제거
             category: null,
             size: 15
         })
@@ -183,8 +254,8 @@ async searchActualPlaces(keyword) {
         phone: place.phone,
         url: place.url,
         coordinates: {
-            lat: place.y,
-            lng: place.x
+            lat: parseFloat(place.y),
+            lng: parseFloat(place.x)
         }
     }));
 }
