@@ -1003,8 +1003,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleBtn = document.querySelector('.toggle-btn');
     toggleBtn.textContent = '<';
     
-    // locationSearchHandler 초기화
-    locationSearchHandler = new LocationSearchHandler();
+    // LocationSearchHandler 클래스가 로드된 후 초기화
+    if (typeof LocationSearchHandler !== 'undefined') {
+        locationSearchHandler = new LocationSearchHandler();
+        console.log('✅ LocationSearchHandler 초기화 성공');
+    } else {
+        console.error('❌ LocationSearchHandler 클래스를 찾을 수 없습니다.');
+    }
     
     // 엔터키로 메시지 전송
 const chatInput = document.getElementById('chatInput');
@@ -1299,7 +1304,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 <script src="js/location-search-handler.js"></script>
 <script>
 // 스크립트 로딩 확인 및 초기화
-document.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('load', function() {
     console.log('🔍 스크립트 로딩 상태 확인');
     console.log('LocationSearchHandler:', typeof LocationSearchHandler);
     console.log('CourseManager:', typeof CourseManager);
