@@ -662,76 +662,117 @@ addCourseExpansionInterface() {
     interfaceDiv.className = 'message ai-message course-expansion-container';
     interfaceDiv.id = 'courseExpansionInterface';
     
+    this.updateCourseExpansionInterface();
+    
+    messagesContainer.appendChild(interfaceDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// 코스 확장 인터페이스 업데이트
+updateCourseExpansionInterface() {
+    const interfaceDiv = document.getElementById('courseExpansionInterface');
+    if (!interfaceDiv) return;
+    
+    const courseCount = this.courseManager ? this.courseManager.getCourseCount() : 1;
+    const maxCourses = 6;
+    const canAddMore = courseCount < maxCourses;
+    
+    // 현재 설정된 코스들의 번호 가져오기
+    const sortedCourses = this.courseManager ? this.courseManager.getSortedCourses() : [{number: 1}];
+    
+    // 원들을 배열로 생성
+    const circles = [];
+    
+    // 왼쪽 빈 원들 (최대 2개까지)
+    const leftEmptyCount = Math.min(2, Math.max(0, maxCourses - courseCount));
+    for (let i = 0; i < leftEmptyCount && canAddMore; i++) {
+        circles.push({
+            type: 'empty',
+            side: 'left',
+            index: i
+        });
+    }
+    
+    // 실제 코스들
+    sortedCourses.forEach((course, index) => {
+        circles.push({
+            type: 'filled',
+            number: course.number,
+            isCenter: course.number === 1
+        });
+    });
+    
+    // 오른쪽 빈 원들 (나머지 공간)
+    const rightEmptyCount = maxCourses - courseCount - leftEmptyCount;
+    for (let i = 0; i < rightEmptyCount && canAddMore; i++) {
+        circles.push({
+            type: 'empty',
+            side: 'right',
+            index: i
+        });
+    }
+    
+    const circleElements = circles.map((circle, index) => {
+        if (circle.type === 'empty') {
+            return `
+                <button class="course-add-btn" onclick="locationSearchHandler.addCourseSlot('${circle.side}')" style="
+                    width: ${circle.side === 'left' && index === 0 ? '40px' : '35px'};
+                    height: ${circle.side === 'left' && index === 0 ? '40px' : '35px'};
+                    border-radius: 50%;
+                    border: 2px dashed #bdc3c7;
+                    background: transparent;
+                    color: #bdc3c7;
+                    font-size: ${circle.side === 'left' && index === 0 ? '20px' : '16px'};
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                " onmouseover="this.style.background='#ecf0f1'; this.style.color='#7f8c8d';" 
+                   onmouseout="this.style.background='transparent'; this.style.color='#bdc3c7';">+</button>
+            `;
+        } else {
+            const colors = {
+                1: '#FF4444', 2: '#0080FF', 3: '#00FF00', 
+                4: '#8000FF', 5: '#FF00FF', 6: '#00FFFF'
+            };
+            const color = colors[Math.abs(circle.number)] || '#666666';
+            
+            return `
+                <div class="course-indicator" style="
+                    width: ${circle.isCenter ? '50px' : '40px'};
+                    height: ${circle.isCenter ? '50px' : '40px'};
+                    border-radius: 50%;
+                    background: ${color};
+                    color: white;
+                    font-size: ${circle.isCenter ? '24px' : '18px'};
+                    font-weight: bold;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 ${circle.isCenter ? '4px 12px' : '2px 8px'} ${color}33;
+                    border: 2px solid white;
+                ">${circle.number}</div>
+            `;
+        }
+    }).join('');
+    
     interfaceDiv.innerHTML = `
         <div class="message-content">
             <div class="course-expansion-interface" style="
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                gap: 15px;
+                gap: 10px;
                 padding: 20px;
                 background: #f8f9ff;
                 border-radius: 12px;
                 margin: 10px 0;
+                flex-wrap: wrap;
             ">
-                <button class="course-add-btn" onclick="locationSearchHandler.addCourseSlot('left')" style="
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    border: none;
-                    background: #bdc3c7;
-                    color: white;
-                    font-size: 20px;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                ">+</button>
-                
-                <div class="current-course-indicator" style="
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 50%;
-                    background: #FF4444;
-                    color: white;
-                    font-size: 24px;
-                    font-weight: bold;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    box-shadow: 0 4px 12px rgba(255,68,68,0.3);
-                ">1</div>
-                
-                <button class="course-add-btn" onclick="locationSearchHandler.addCourseSlot('right')" style="
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    border: none;
-                    background: #bdc3c7;
-                    color: white;
-                    font-size: 20px;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                ">+</button>
+                ${circleElements}
             </div>
-        </div>
-    `;
-    
-    messagesContainer.appendChild(interfaceDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-// 코스 슬롯 추가
-addCourseSlot(direction) {
-    if (!this.courseManager) return;
-    
-    const newNumber = this.courseManager.getNextSlotNumber(direction);
-    if (newNumber === null) {
-        addMessage('최대 6개의 코스까지만 추가할 수 있습니다!', 'ai');
-        return;
-    }
-    
-    addMessage(`${newNumber}번 코스를 추가합니다. 어떤 장소를 원하시나요?`, 'ai');
-    // TODO: 장소 검색 모드로 전환
-}
+            ${!canAddMore ? '<div style="text-align: center; color: #6c7b8a; font-size: 0.9rem; margin-top: 10px;">최대 6개 코스에 도달했습니다
 
     // 초기화 메시지
     getInitialMessage() {
