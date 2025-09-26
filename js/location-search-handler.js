@@ -8,11 +8,16 @@ class LocationSearchHandler {
 
     // 사용자 입력 처리
 async processUserInput(message) {
+    console.log('🔍 사용자 입력 처리 시작:', message);
+    
     try {
         // AI 기반 자연어 처리로 장소 검색
+        console.log('🤖 AI 검색 시도 중...');
         const aiResult = await this.searchWithAI(message);
+        console.log('🤖 AI 검색 결과:', aiResult);
         
         if (aiResult.success && aiResult.places.length > 0) {
+            console.log('✅ AI 검색 성공, 결과 표시');
             this.searchResults = aiResult.places;
             
             // 하단바에 결과 표시
@@ -24,12 +29,13 @@ async processUserInput(message) {
             // AI 응답 메시지 반환
             return aiResult.aiResponse;
         } else {
+            console.log('⚠️ AI 검색 결과 없음, 폴백 검색으로 전환');
             // AI 검색 실패 시 기존 방식으로 폴백
             return await this.fallbackSearch(message);
         }
         
     } catch (error) {
-        console.error('AI 장소 검색 오류:', error);
+        console.error('❌ AI 장소 검색 오류:', error);
         // 오류 시 기존 방식으로 폴백
         return await this.fallbackSearch(message);
     }
@@ -112,13 +118,38 @@ async searchWithAI(message) {
 
 // 기존 방식 폴백 검색
 async fallbackSearch(message) {
-    const places = await this.searchPlaces(message);
+    console.log('🔄 폴백 검색 시작:', message);
     
-    if (places.length === 0) {
-        return `'${message}'에 대한 검색 결과가 없습니다. 다른 장소명을 입력해주세요.`;
+    // 키워드 단순화 시도
+    const simplifiedKeywords = this.extractSearchKeywords(message);
+    console.log('🔍 추출된 키워드:', simplifiedKeywords);
+    
+    let allPlaces = [];
+    
+    // 여러 키워드로 검색 시도
+    for (const keyword of simplifiedKeywords) {
+        try {
+            console.log(`🔍 키워드 "${keyword}"로 검색 중...`);
+            const places = await this.searchActualPlaces(keyword);
+            console.log(`📍 "${keyword}" 검색 결과: ${places.length}개`);
+            
+            if (places.length > 0) {
+                allPlaces.push(...places);
+            }
+        } catch (error) {
+            console.warn(`키워드 "${keyword}" 검색 실패:`, error);
+        }
+    }
+    
+    // 중복 제거
+    const uniquePlaces = this.removeDuplicatePlaces(allPlaces);
+    console.log('📊 중복 제거 후 총 결과:', uniquePlaces.length);
+    
+    if (uniquePlaces.length === 0) {
+        return `'${message}'에 대한 검색 결과가 없습니다. 더 간단한 키워드로 검색해보세요.\n\n예: "대구 공원", "대구 카페", "피크닉"`;
     }
 
-    this.searchResults = places.slice(0, 3);
+    this.searchResults = uniquePlaces.slice(0, 3);
     this.displayBottomBar();
     this.displayMarkersOnMap();
     
@@ -456,7 +487,66 @@ createRepresentativeMarker(place) {
             return `'${keyword}'로 검색한 결과 ${results.length}개의 장소를 찾았습니다:\n\n하단의 A, B, C 중에서 원하는 장소를 선택하거나 지도의 마커를 클릭해주세요!`;
         }
     }
+// 검색 키워드 추출 함수 추가
+    extractSearchKeywords(message) {
+        const keywords = [];
+        
+        // 지역명 추출
+        const regions = ['대구', '서울', '부산', '인천', '광주', '대전', '울산', '세종', '홍대', '강남', '명동', '이태원', '신촌', '건대', '압구정', '가로수길'];
+        const foundRegion = regions.find(region => message.includes(region));
+        
+        // 활동/장소 키워드 추출
+        const activityMap = {
+            '피크닉': ['공원', '야외', '잔디'],
+            '데이트': ['카페', '레스토랑', '영화관'],
+            '맛집': ['레스토랑', '음식점', '맛집'],
+            '카페': ['카페', '커피'],
+            '쇼핑': ['쇼핑몰', '백화점', '상가'],
+            '관광': ['관광지', '명소', '여행'],
+            '문화': ['박물관', '미술관', '전시관'],
+            '야경': ['야경', '전망대', '루프탑']
+        };
+        
+        // 메시지에서 활동 키워드 찾기
+        for (const [activity, places] of Object.entries(activityMap)) {
+            if (message.includes(activity)) {
+                if (foundRegion) {
+                    places.forEach(place => keywords.push(`${foundRegion} ${place}`));
+                } else {
+                    keywords.push(...places);
+                }
+            }
+        }
+        
+        // 키워드를 찾지 못했으면 지역명과 전체 메시지로 검색
+        if (keywords.length === 0) {
+            if (foundRegion) {
+                keywords.push(foundRegion);
+                keywords.push(foundRegion + ' 공원'); // 피크닉 관련 기본 검색
+            } else {
+                keywords.push(message);
+            }
+        }
+        
+        return [...new Set(keywords)]; // 중복 제거
+    }
 
+    // 중복 장소 제거 함수 추가
+    removeDuplicatePlaces(places) {
+        const uniquePlaces = [];
+        const seenNames = new Set();
+        
+        places.forEach(place => {
+            // 장소명으로 중복 체크 (대소문자 무시)
+            const normalizedName = place.name.toLowerCase().trim();
+            if (!seenNames.has(normalizedName)) {
+                seenNames.add(normalizedName);
+                uniquePlaces.push(place);
+            }
+        });
+        
+        return uniquePlaces;
+    }
     // 마커 제거
     clearMarkers() {
         this.markers.forEach(marker => {
