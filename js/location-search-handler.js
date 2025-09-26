@@ -7,7 +7,7 @@ class LocationSearchHandler {
     }
 
     // 사용자 입력 처리
-processUserInput(message) {
+async processUserInput(message) {
     try {
         // AI 기반 자연어 처리로 장소 검색
         const aiResult = await this.searchWithAI(message);
@@ -36,8 +36,7 @@ processUserInput(message) {
 }
 
     // 백엔드 API로 장소 검색
-// 백엔드 API로 장소 검색
-searchPlaces(keyword) {
+async searchPlaces(keyword) {
     // 지역명인지 판단
     const regionKeywords = ['서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종', '홍대', '강남', '명동', '이태원', '신촌', '건대', '압구정', '가로수길'];
     const isRegion = regionKeywords.some(region => keyword.includes(region));
