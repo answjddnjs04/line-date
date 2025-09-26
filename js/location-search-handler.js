@@ -843,10 +843,29 @@ updateCourseExpansionInterface() {
             ">
                 ${circleElements}
             </div>
-            ${!canAddMore ? '<div style="text-align: center; color: #6c7b8a; font-size: 0.9rem; margin-top: 10px;">최대 6개 코스에 도달했습니다
+            ${!canAddMore ? '<div style="text-align: center; color: #6c7b8a; font-size: 0.9rem; margin-top: 10px;">최대 6개 코스에 도달했습니다</div>' : ''}
+        </div>
+    `;
+}
 
-    // 초기화 메시지
-    getInitialMessage() {
+// 코스 슬롯 추가
+addCourseSlot(side) {
+    if (!this.courseManager) {
+        this.courseManager = new CourseManager();
+    }
+    
+    const slotNumber = this.courseManager.getNextSlotNumber(side);
+    if (slotNumber) {
+        this.courseManager.addEmptySlot(slotNumber);
+        this.updateCourseExpansionInterface();
+        
+        const message = `${slotNumber}번 슬롯이 추가되었습니다. 장소를 검색해서 추가해주세요!`;
+        addMessage(message, 'ai');
+    }
+}
+
+// 초기화 메시지
+getInitialMessage() {
         return "안녕하세요! 어디로 놀러 가고 싶으신가요? 🎯\n\n지역이나 특정 위치를 말해주세요!\n(예: 야외음악당, 홍대, 강남역, 부산 해운대 등)";
     }
 }
