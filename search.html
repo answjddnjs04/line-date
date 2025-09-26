@@ -995,10 +995,16 @@ function toggleSidebar() {
     }
 }
 
+// 전역 변수 선언
+let locationSearchHandler = null;
+
 // 페이지 로드시 사이드바 열린 상태로 초기화
 document.addEventListener('DOMContentLoaded', function() {
     const toggleBtn = document.querySelector('.toggle-btn');
     toggleBtn.textContent = '<';
+    
+    // locationSearchHandler 초기화
+    locationSearchHandler = new LocationSearchHandler();
     
     // 엔터키로 메시지 전송
 const chatInput = document.getElementById('chatInput');
@@ -1022,6 +1028,11 @@ async function sendMessage() {
     const message = input.value.trim();
     
     if (!message) return;
+    
+    // locationSearchHandler가 초기화되지 않았으면 초기화
+    if (!locationSearchHandler) {
+        locationSearchHandler = new LocationSearchHandler();
+    }
     
     // 사용자 메시지 추가
     addMessage(message, 'user');
