@@ -444,7 +444,7 @@ async displayPlaceConfirmation(place, container) {
                 이 위치를 실제로 방문하실건가요?
             </div>
             
-            <div class="selected-location-block" id="selectedLocationBlock">
+            <div class="selected-location-block" id="selectedLocationBlock" onclick="window.open('${place.url}', '_blank')" style="cursor: pointer;">
                 <div class="location-image-container">
                     <img src="${placeImage}" alt="${place.name}" class="location-image" />
                 </div>
