@@ -391,7 +391,7 @@ selectLocation(index) {
     // 세부 코스 제목 업데이트
     const detailCourseHeader = document.querySelector('.detail-course-header h3');
     if (detailCourseHeader) {
-        detailCourseHeader.textContent = `대표 위치: ${selectedPlace.name}`;
+        detailCourseHeader.textContent = `1. ${selectedPlace.name}`;
     }
 
     // 우측 사이드바 활성화 및 장소 확인 인터페이스 표시
@@ -406,7 +406,7 @@ if (rightSidebar && detailCourseBox && detailCourseContent) {
     // 세부 코스 헤더 업데이트
     const detailCourseHeader = document.querySelector('.detail-course-header h3');
     if (detailCourseHeader) {
-        detailCourseHeader.textContent = `선택된 위치 확인`;
+        detailCourseHeader.textContent = `1. ${selectedPlace.name} 확인`;
     }
     
     // 장소 확인 인터페이스 생성
@@ -427,7 +427,7 @@ createRepresentativeMarker(place) {
 
     const position = new kakao.maps.LatLng(place.coordinates.lat, place.coordinates.lng);
     
-    // 대표 위치 아이콘 생성
+    // 대표 위치 아이콘 생성 (1번 마커)
     const markerContent = document.createElement('div');
     markerContent.className = 'representative-marker';
     markerContent.style.cssText = `
@@ -446,7 +446,7 @@ createRepresentativeMarker(place) {
         cursor: pointer;
         position: relative;
     `;
-    markerContent.innerHTML = '📍';
+    markerContent.textContent = '1';
 
     const customOverlay = new kakao.maps.CustomOverlay({
         position: position,
